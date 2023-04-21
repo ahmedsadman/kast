@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Grid, GridItem } from '@chakra-ui/react';
 import MediaSection from './MediaSection';
 import JoinModal from './JoinModal';
-import { createConnection } from './socket';
+import EventsHandler from './eventsHandler';
 
 import styles from './App.module.css';
 
 function App() {
   const [roomId, setRoomId] = useState<string | null>(null);
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const eventHandler = useRef<EventsHandler | null>(null);
 
   useEffect(() => {
     const roomId = window.location?.pathname?.split('/')?.[1];
@@ -19,8 +20,10 @@ function App() {
       setShowJoinModal(true);
     }
 
-    // TODO: Test Code. Make sure to use useRef to avoid multiple connections
-    createConnection().then(() => console.log('done'));
+    if (!eventHandler.current) {
+      eventHandler.current = new EventsHandler();
+      eventHandler.current.connect().then(() => console.log('done'));
+    }
 
     setRoomId(roomId);
   }, []);
