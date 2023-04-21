@@ -24,4 +24,9 @@ export default defineConfig(async () => ({
     // produce sourcemaps for debug builds
     sourcemap: !!process.env.TAURI_DEBUG,
   },
+  css: {
+    modules: {
+      localsConvention: 'camelCase',
+    },
+  },
 }));
