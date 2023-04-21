@@ -3,6 +3,8 @@ import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 
+import EventsHander from './eventsHandler';
+
 const PORT = process.env.PORT || 3005;
 
 const app = express();
@@ -21,8 +23,7 @@ app.get('/status', (_req, res) => {
   res.send({ status: 'OK' });
 });
 
-io.on('connection', (socket) => {
-  console.log('user connected', socket.id);
-});
+const eventsHandler = new EventsHander(io);
+eventsHandler.registerEvents();
 
 server.listen(PORT, () => console.log(`Server started on PORT ${PORT}`));

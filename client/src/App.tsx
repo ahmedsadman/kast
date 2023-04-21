@@ -1,31 +1,27 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { Grid, GridItem } from '@chakra-ui/react';
 import MediaSection from './MediaSection';
 import JoinModal from './JoinModal';
-import EventsHandler from './eventsHandler';
+import eventsHandler from './eventsHandler';
 
 import styles from './App.module.css';
 
 function App() {
   const [roomId, setRoomId] = useState<string | null>(null);
   const [showJoinModal, setShowJoinModal] = useState(false);
-  const eventHandler = useRef<EventsHandler | null>(null);
 
   useEffect(() => {
-    const roomId = window.location?.pathname?.split('/')?.[1];
+    const _roomId = window.location?.pathname?.split('/')?.[1];
     console.log('id is', roomId);
 
     // TODO: Improve RoomID validation
-    if (!roomId) {
+    if (!_roomId) {
       setShowJoinModal(true);
     }
 
-    if (!eventHandler.current) {
-      eventHandler.current = new EventsHandler();
-      eventHandler.current.connect().then(() => console.log('done'));
-    }
+    eventsHandler.connect().then(() => eventsHandler.emitJoin());
 
-    setRoomId(roomId);
+    setRoomId(_roomId);
   }, []);
 
   return (

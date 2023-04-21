@@ -2,18 +2,38 @@ import { io, Socket } from 'socket.io-client';
 
 class EventsHandler {
   #socket: Socket | null = null;
+  #isConnecting = false;
 
-  connect() {
+  connect(): Promise<void> {
     return new Promise((resolve) => {
-      const socket = io('http://localhost:3005', { path: '/socket' });
+      if (this.#isConnecting) {
+        return resolve();
+      }
 
-      socket.on('connect', () => {
-        console.log('connected', socket.id);
-        this.#socket = socket;
-        resolve(this);
+      if (this.#socket?.id) {
+        console.log('Already connected');
+        return resolve();
+      }
+
+      this.#isConnecting = true;
+      const _socket = io('http://localhost:3005', { path: '/socket' });
+
+      _socket.on('connect', () => {
+        console.log('connected', this.#socket?.id);
+        this.#socket = _socket;
+        this.#isConnecting = false;
+        resolve();
       });
     });
   }
+
+  emitJoin(roomId = null) {
+    console.log('emit join');
+    this.#socket?.emit('userJoin', {
+      roomId: roomId || this.#socket.id,
+    });
+    return this;
+  }
 }
 
-export default EventsHandler;
+export default new EventsHandler();
