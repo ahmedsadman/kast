@@ -3,7 +3,6 @@ import { Button } from '@chakra-ui/react';
 import styles from './MediaSection.module.css';
 
 function SelectionPlaceholder({ onChange }: SelectionPlaceholderProps) {
-  console.log('i rendered');
   const inputFileRef = useRef<HTMLInputElement>(null);
 
   const handleSelectVideo = (event: React.ChangeEvent<HTMLInputElement>) => {
