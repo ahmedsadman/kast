@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Grid, GridItem } from '@chakra-ui/react';
 import MediaSection from './MediaSection';
 import JoinModal from './JoinModal';
+import { createConnection } from './socket';
 
 import styles from './App.module.css';
 
@@ -17,6 +18,9 @@ function App() {
     if (!roomId) {
       setShowJoinModal(true);
     }
+
+    // TODO: Test Code. Make sure to use useRef to avoid multiple connections
+    createConnection().then(() => console.log('done'));
 
     setRoomId(roomId);
   }, []);

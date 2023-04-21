@@ -19,7 +19,8 @@
     "@tauri-apps/api": "^1.2.0",
     "framer-motion": "^10.12.4",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "socket.io-client": "^4.6.1"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.2.3",
