@@ -1,0 +1,19 @@
+.container {
+    height: 97vh;
+    margin: 1em;
+    flex: 1;
+    display: flex;
+}
+
+.selection_ph_container {
+    border: 1px dashed white;
+    display: flex;
+    height: inherit;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+.selection_ph_file_input {
+    display: none;
+}
