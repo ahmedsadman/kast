@@ -4,7 +4,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import rooms from './rooms';
 
-import EventsHander from './eventsHandler';
+import EventsHandler from './eventsHandler';
 
 const PORT = process.env.PORT || 3005;
 
@@ -30,7 +30,7 @@ app.get('/user/:userId', async (req, res) => {
   res.send({ user });
 });
 
-const eventsHandler = new EventsHander(io);
+const eventsHandler = new EventsHandler(io);
 eventsHandler.registerEvents();
 
 server.listen(PORT, () => console.log(`Server started on PORT ${PORT}`));
