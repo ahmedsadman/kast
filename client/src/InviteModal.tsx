@@ -18,7 +18,7 @@ function InviteModal({ isOpen, onClose, roomId, closeOnOverlayClick = false }: M
   const { onCopy, setValue: setClipboardValue, hasCopied } = useClipboard('');
 
   const getInviteLink = useCallback(() => {
-    return roomId ? `http://localhost:1420/${roomId}` : '';
+    return roomId ? `${window.location.origin}/${roomId}` : '';
   }, [roomId]);
 
   useEffect(() => {
