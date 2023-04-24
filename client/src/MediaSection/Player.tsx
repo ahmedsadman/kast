@@ -6,24 +6,45 @@ import styles from './MediaSection.module.css';
 function Player({ src }: PlayerProps) {
   const playerRef = useRef<HTMLVideoElement>(null);
 
-  const handleVideoPlayed = () => {
+  const onVideoPlayed = () => {
     eventsHandler.emitVideoPlayed(playerRef.current?.currentTime || 0);
   };
 
+  const onVideoPaused = () => {
+    eventsHandler.emitVideoPause();
+  };
+
+  const registerPlayerEvents = () => {
+    eventsHandler.registerVideoEvents((name, time) => {
+      if (!playerRef.current) {
+        return;
+      }
+
+      if (name === 'videoPlayed') {
+        playerRef.current.currentTime = time || 0;
+        playerRef.current.play();
+      }
+
+      if (name === 'videoPaused') {
+        playerRef.current.pause();
+      }
+    });
+  };
+
   useEffect(() => {
-    if (playerRef.current) {
-      eventsHandler.registerVideoEvents((_name, time) => {
-        if (playerRef.current) {
-          playerRef.current.currentTime = time;
-          playerRef.current.play();
-        }
-      });
-    }
+    registerPlayerEvents();
   }, []);
 
   return (
     // eslint-disable-next-line jsx-a11y/media-has-caption
-    <video ref={playerRef} className={styles.playerVideo} onPlay={handleVideoPlayed} controls src={src} />
+    <video
+      ref={playerRef}
+      className={styles.playerVideo}
+      onPlay={onVideoPlayed}
+      onPause={onVideoPaused}
+      controls
+      src={src}
+    />
   );
 }
 

@@ -34,9 +34,13 @@ class EventsHandler {
     });
   }
 
-  registerVideoEvents(callback: (_eventName: string, _time: number) => void) {
+  registerVideoEvents(callback: (_eventName: string, _time?: number) => void) {
     this.#socket?.on('videoPlayed', (data) => {
       callback('videoPlayed', data.time);
+    });
+
+    this.#socket?.on('videoPaused', () => {
+      callback('videoPaused');
     });
   }
 
@@ -50,6 +54,11 @@ class EventsHandler {
 
   emitVideoPlayed(time: number) {
     this.#socket?.emit('videoPlayed', { time });
+    return this;
+  }
+
+  emitVideoPause() {
+    this.#socket?.emit('videoPaused');
     return this;
   }
 }
