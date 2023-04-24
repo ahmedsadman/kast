@@ -7,14 +7,18 @@ function Player({ src }: PlayerProps) {
   const playerRef = useRef<HTMLVideoElement>(null);
 
   const handleVideoPlayed = () => {
-    eventsHandler.emitVideoPlayed();
+    eventsHandler.emitVideoPlayed(playerRef.current?.currentTime || 0);
   };
 
   useEffect(() => {
     if (playerRef.current) {
-      eventsHandler.registerVideoEvents(() => playerRef.current?.play());
+      eventsHandler.registerVideoEvents((_name, time) => {
+        if (playerRef.current) {
+          playerRef.current.currentTime = time;
+          playerRef.current.play();
+        }
+      });
     }
-    console.log('i rendered');
   }, []);
 
   return (
