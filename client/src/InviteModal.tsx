@@ -1,3 +1,4 @@
+import { useEffect, useCallback } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -7,13 +8,22 @@ import {
   ModalBody,
   Button,
   Input,
-  InputGroup,
-  InputLeftElement,
+  HStack,
+  IconButton,
+  useClipboard,
 } from '@chakra-ui/react';
-import { AtSignIcon } from '@chakra-ui/icons';
+import { CopyIcon, CheckIcon } from '@chakra-ui/icons';
 
 function InviteModal({ isOpen, onClose, roomId, closeOnOverlayClick = false }: ModalProps) {
-  const getInviteLink = () => `http://localhost:1420/${roomId}`;
+  const { onCopy, setValue: setClipboardValue, hasCopied } = useClipboard('');
+
+  const getInviteLink = useCallback(() => {
+    return roomId ? `http://localhost:1420/${roomId}` : '';
+  }, [roomId]);
+
+  useEffect(() => {
+    setClipboardValue(getInviteLink());
+  }, [roomId, setClipboardValue, getInviteLink]);
 
   return (
     <Modal isOpen={isOpen} isCentered size="lg" onClose={onClose} closeOnOverlayClick={closeOnOverlayClick}>
@@ -21,12 +31,14 @@ function InviteModal({ isOpen, onClose, roomId, closeOnOverlayClick = false }: M
       <ModalContent>
         <ModalHeader>Copy this link to invite</ModalHeader>
         <ModalBody>
-          <InputGroup>
-            <InputLeftElement pointerEvents="none">
-              <AtSignIcon color="gray.300" />
-            </InputLeftElement>
+          <HStack>
             <Input type="text" readOnly value={getInviteLink()} />
-          </InputGroup>
+            <IconButton
+              aria-label="Copy to Clipboard"
+              icon={hasCopied ? <CheckIcon /> : <CopyIcon />}
+              onClick={onCopy}
+            />
+          </HStack>
         </ModalBody>
 
         <ModalFooter>
