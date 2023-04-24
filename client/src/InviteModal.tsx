@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -13,26 +12,26 @@ import {
 } from '@chakra-ui/react';
 import { AtSignIcon } from '@chakra-ui/icons';
 
-function JoinModal({ isOpen, loading, onClose, closeOnOverlayClick = false, onSubmit }: ModalProps) {
-  const [name, setName] = useState('');
+function InviteModal({ isOpen, onClose, roomId, closeOnOverlayClick = false }: ModalProps) {
+  const getInviteLink = () => `http://localhost:1420/${roomId}`;
 
   return (
     <Modal isOpen={isOpen} isCentered size="lg" onClose={onClose} closeOnOverlayClick={closeOnOverlayClick}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Enter Display Name</ModalHeader>
+        <ModalHeader>Copy this link to invite</ModalHeader>
         <ModalBody>
           <InputGroup>
             <InputLeftElement pointerEvents="none">
               <AtSignIcon color="gray.300" />
             </InputLeftElement>
-            <Input type="text" placeholder="Display name" value={name} onChange={(e) => setName(e.target.value)} />
+            <Input type="text" readOnly value={getInviteLink()} />
           </InputGroup>
         </ModalBody>
 
         <ModalFooter>
-          <Button disabled={loading} isLoading={loading} colorScheme="blue" mr={3} onClick={() => onSubmit(name)}>
-            Submit
+          <Button colorScheme="blue" mr={3} onClick={onClose}>
+            Okay
           </Button>
         </ModalFooter>
       </ModalContent>
@@ -42,10 +41,9 @@ function JoinModal({ isOpen, loading, onClose, closeOnOverlayClick = false, onSu
 
 type ModalProps = {
   isOpen: boolean;
-  loading: boolean;
   onClose: () => void;
-  onSubmit: (_name: string) => void;
+  roomId: string | null;
   closeOnOverlayClick?: boolean;
 };
 
-export default JoinModal;
+export default InviteModal;
