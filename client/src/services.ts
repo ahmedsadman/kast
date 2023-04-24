@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { User } from './types';
 
-const BASE_URL = 'http://localhost:3005';
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
 export const pollUserDetails = (userId: string): Promise<User> => {
   return new Promise((resolve, reject) => {
