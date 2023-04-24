@@ -13,6 +13,7 @@ class EventsHandler {
       console.log('user connected', socket.id);
       this.#registerUserJoin(socket);
       this.#registerUserDisconnect(socket);
+      this.#registerPlayerEvents(socket);
     });
   }
 
@@ -25,7 +26,7 @@ class EventsHandler {
       rooms.addRoom(roomId);
       rooms.addUser(roomId, name, socket.id);
 
-      socket.to(roomId).emit('roomUserJoin', {
+      this.#io?.to(roomId).emit('roomUserJoin', {
         id: socket.id,
         roomId,
         name,
@@ -37,6 +38,13 @@ class EventsHandler {
     socket.on('disconnect', () => {
       console.log('user disconnected', socket.id);
       rooms.removeUser(socket.id);
+    });
+  }
+
+  #registerPlayerEvents(socket: Socket) {
+    socket.on('videoPlayed', () => {
+      const userRoom = rooms.getUserRoom(socket.id);
+      this.#io?.to(userRoom).emit('videoPlayed', { id: socket.id });
     });
   }
 }

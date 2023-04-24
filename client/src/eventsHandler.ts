@@ -21,6 +21,7 @@ class EventsHandler {
       _socket.on('connect', () => {
         this.#socket = _socket;
         this.#isConnecting = false;
+
         this.#registerEvents();
         resolve(this.#socket.id);
       });
@@ -33,11 +34,22 @@ class EventsHandler {
     });
   }
 
+  registerVideoEvents(callback: (_eventName: string) => void) {
+    this.#socket?.on('videoPlayed', () => {
+      callback('videoPlayed');
+    });
+  }
+
   emitJoin(name: string, roomId: string | null = null) {
     this.#socket?.emit('join', {
       roomId: roomId || this.#socket.id,
       name,
     });
+    return this;
+  }
+
+  emitVideoPlayed() {
+    this.#socket?.emit('videoPlayed');
     return this;
   }
 }
