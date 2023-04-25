@@ -48,11 +48,6 @@ class EventsHandler {
       socket.to(userRoom).emit('videoPlayed', { id: socket.id, time: data.time });
     });
 
-    socket.on('videoSeeked', (data) => {
-      const userRoom = rooms.getUserRoom(socket.id);
-      socket.to(userRoom).emit('videoSeeked', { id: socket.id, time: data.time });
-    });
-
     socket.on('videoPaused', () => {
       const userRoom = rooms.getUserRoom(socket.id);
       socket.to(userRoom).emit('videoPaused', { id: socket.id });

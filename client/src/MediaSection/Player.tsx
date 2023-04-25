@@ -5,18 +5,25 @@ import styles from './MediaSection.module.css';
 
 function Player({ src, isPlaying, currentTime }: PlayerProps) {
   const playerRef = useRef<HTMLVideoElement>(null);
-  const lastSeekEvent = useRef(Date.now());
 
   useEffect(() => {
-    if (!playerRef.current) {
-      return;
+    async function handlePlay() {
+      if (!playerRef.current) {
+        return;
+      }
+
+      try {
+        if (isPlaying) {
+          await playerRef.current.play();
+        } else {
+          playerRef.current.pause();
+        }
+      } catch (err) {
+        console.log('err', err);
+      }
     }
 
-    if (isPlaying) {
-      playerRef.current.play();
-    } else {
-      playerRef.current.pause();
-    }
+    handlePlay();
   }, [isPlaying]);
 
   useEffect(() => {
@@ -37,29 +44,9 @@ function Player({ src, isPlaying, currentTime }: PlayerProps) {
     socket.emit('videoPaused');
   }, []);
 
-  const onSeeked = useCallback(() => {
-    const currTime = Date.now();
-
-    // A not-so-perfect attempt to prevent circular seeks
-    if (currTime - lastSeekEvent.current > 200) {
-      socket.emit('videoSeeked', {
-        time: playerRef.current?.currentTime,
-      });
-      lastSeekEvent.current = currTime;
-    }
-  }, []);
-
   return (
     // eslint-disable-next-line jsx-a11y/media-has-caption
-    <video
-      ref={playerRef}
-      className={styles.playerVideo}
-      onPlay={onPlay}
-      onPause={onPause}
-      onSeeked={onSeeked}
-      controls
-      src={src}
-    />
+    <video ref={playerRef} className={styles.playerVideo} onPlay={onPlay} onPause={onPause} controls src={src} />
   );
 }
 
