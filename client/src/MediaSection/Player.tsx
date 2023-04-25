@@ -44,23 +44,9 @@ function Player({ src, isPlaying, currentTime }: PlayerProps) {
     socket.emit('videoPaused');
   }, []);
 
-  const onSeeked = useCallback(async () => {
-    socket.emit('videoPlayed', {
-      time: playerRef.current?.currentTime,
-    });
-  }, []);
-
   return (
     // eslint-disable-next-line jsx-a11y/media-has-caption
-    <video
-      ref={playerRef}
-      className={styles.playerVideo}
-      onPlay={onPlay}
-      onPause={onPause}
-      onSeeked={onSeeked}
-      controls
-      src={src}
-    />
+    <video ref={playerRef} className={styles.playerVideo} onPlay={onPlay} onPause={onPause} controls src={src} />
   );
 }
 
