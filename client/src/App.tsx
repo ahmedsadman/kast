@@ -56,16 +56,23 @@ function App() {
       setIsPlaying(false);
     }
 
+    function onVideoSeeked(data: { id: string; time: number }) {
+      console.log('onVideoSeeked');
+      setCurrentTime(data.time);
+    }
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('videoPlayed', onVideoPlayed);
     socket.on('videoPaused', onVideoPaused);
+    socket.on('videoSeeked', onVideoSeeked);
 
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
       socket.off('videoPlayed', onVideoPlayed);
       socket.off('videoPaused', onVideoPaused);
+      socket.off('videoSeeked', onVideoSeeked);
     };
   }, []);
 

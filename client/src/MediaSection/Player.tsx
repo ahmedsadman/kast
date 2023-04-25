@@ -5,6 +5,7 @@ import styles from './MediaSection.module.css';
 
 function Player({ src, isPlaying, currentTime }: PlayerProps) {
   const playerRef = useRef<HTMLVideoElement>(null);
+  const lastEventTime = useRef(Date.now());
 
   useEffect(() => {
     if (!playerRef.current) {
@@ -26,6 +27,15 @@ function Player({ src, isPlaying, currentTime }: PlayerProps) {
     playerRef.current.currentTime = currentTime;
   }, [currentTime]);
 
+  const eventEmitter = useCallback((func: () => void) => {
+    const currTime = Date.now();
+    if (currTime - lastEventTime.current > 200) {
+      console.log('delayed run');
+      func();
+      lastEventTime.current = currTime;
+    }
+  }, []);
+
   const onPlay = useCallback(() => {
     socket.emit('videoPlayed', {
       time: playerRef.current?.currentTime,
@@ -36,9 +46,25 @@ function Player({ src, isPlaying, currentTime }: PlayerProps) {
     socket.emit('videoPaused');
   }, []);
 
+  const onSeeked = useCallback(() => {
+    eventEmitter(() => {
+      socket.emit('videoSeeked', {
+        time: playerRef.current?.currentTime,
+      });
+    });
+  }, [eventEmitter]);
+
   return (
     // eslint-disable-next-line jsx-a11y/media-has-caption
-    <video ref={playerRef} className={styles.playerVideo} onPlay={onPlay} onPause={onPause} controls src={src} />
+    <video
+      ref={playerRef}
+      className={styles.playerVideo}
+      onPlay={onPlay}
+      onPause={onPause}
+      onSeeked={onSeeked}
+      controls
+      src={src}
+    />
   );
 }
 
