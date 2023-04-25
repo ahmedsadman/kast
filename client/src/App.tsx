@@ -19,10 +19,10 @@ function App() {
 
   const handleJoinModalSubmit = async (name: string) => {
     setIsLoading(true);
-    const _roomId = window.location?.pathname?.split('/')?.[1];
+    const roomId = window.location?.pathname?.split('/')?.[1];
 
     socket.emit('join', {
-      roomId: _roomId || socket.id,
+      roomId,
       name,
     });
 
@@ -31,7 +31,7 @@ function App() {
     setIsLoading(false);
     setShowJoinModal(false);
 
-    if (!_roomId) {
+    if (!roomId) {
       setShowInviteModal(true);
     }
   };

@@ -1,17 +1,20 @@
+import { randomUUID } from 'crypto';
+
 class Rooms {
   #roomsMap: RoomsMap;
   #userRoomMap: UserMap;
   /* 
     userId = socket.id
-    roomId = hosts's socket id
   */
   constructor() {
     this.#roomsMap = {}; // { users: [...{name, id, roomId}], videoURL: ''}
     this.#userRoomMap = {}; // maps socket id to rooms
   }
 
-  addRoom(roomId: string) {
-    if (!this.#roomsMap[roomId]) this.#roomsMap[roomId] = { users: [] };
+  createRoom() {
+    const id = randomUUID();
+    this.#roomsMap[id] = { users: [] };
+    return id;
   }
 
   getRoom(roomId: string) {

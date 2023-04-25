@@ -21,12 +21,13 @@ class EventsHandler {
     socket.on('join', (data) => {
       console.log('joining user', data);
       const { roomId, name } = data;
-      socket.join(roomId);
+      const finalRoomId = roomId || rooms.createRoom();
 
-      rooms.addRoom(roomId);
-      rooms.addUser(roomId, name, socket.id);
+      socket.join(finalRoomId);
 
-      this.#io?.to(roomId).emit('roomUserJoin', {
+      rooms.addUser(finalRoomId, name, socket.id);
+
+      this.#io?.to(finalRoomId).emit('roomUserJoin', {
         id: socket.id,
         roomId,
         name,
