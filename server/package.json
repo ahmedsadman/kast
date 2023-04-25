@@ -5,7 +5,9 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint",
-    "dev": "nodemon server.ts"
+    "dev": "nodemon server.ts",
+    "build": "tsc",
+    "start": "node server.js"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
