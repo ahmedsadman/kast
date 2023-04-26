@@ -10,11 +10,20 @@ class EventsHandler {
 
   registerEvents() {
     this.#io?.on('connection', (socket: Socket) => {
+      if (socket.recovered) {
+        console.log('recovered connection', socket.id);
+        return this.#handleRecoveredConnection(socket);
+      }
       console.log('user connected', socket.id);
       this.#registerUserJoin(socket);
       this.#registerUserDisconnect(socket);
       this.#registerPlayerEvents(socket);
     });
+  }
+
+  #handleRecoveredConnection(socket: Socket) {
+    const user = rooms.getUser(socket.id);
+    console.log('found recovered user', user);
   }
 
   #registerUserJoin(socket: Socket) {

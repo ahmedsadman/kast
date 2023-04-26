@@ -17,7 +17,10 @@ const io = new Server(server, {
   cors: {
     origin: ['https://mykast.netlify.app', 'http://127.0.0.1:1420', 'http://localhost:1420'],
   },
-  serveClient: false,
+  connectionStateRecovery: {
+    maxDisconnectionDuration: 2 * 60 * 1000,
+    skipMiddlewares: true,
+  },
 });
 
 app.get('/status', (_req, res) => {

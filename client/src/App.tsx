@@ -44,6 +44,9 @@ function App() {
 
   useEffect(() => {
     function onConnect() {
+      if (socket.recovered) {
+        console.log('connection recovered');
+      }
       setIsSocketConnected(true);
     }
 
