@@ -17,6 +17,8 @@ function App() {
   const [showJoinModal, setShowJoinModal] = useState(true);
   const [showInviteModal, setShowInviteModal] = useState(false);
 
+  const [lastEvent, setLastEvent] = useState<string | null>(null);
+
   const handleJoinModalSubmit = async (name: string) => {
     setIsLoading(true);
     const roomId = window.location?.pathname?.split('/')?.[1];
@@ -36,6 +38,10 @@ function App() {
     }
   };
 
+  const finishEvtProcessing = () => {
+    setLastEvent(null);
+  };
+
   useEffect(() => {
     function onConnect() {
       setIsSocketConnected(true);
@@ -47,12 +53,14 @@ function App() {
 
     function onVideoPlayed(data: { id: string; time: number }) {
       console.log('onVideoPlayed');
+      setLastEvent('videoPlayed');
       setIsPlaying(true);
       setCurrentTime(data.time);
     }
 
     function onVideoPaused() {
       console.log('onVideoPaused');
+      setLastEvent('videoPaused');
       setIsPlaying(false);
     }
 
@@ -80,7 +88,12 @@ function App() {
       <InviteModal isOpen={showInviteModal} roomId={roomId} onClose={() => setShowInviteModal(false)} />
       <Grid h="100vh" flex={1} templateColumns="repeat(8, 1fr)" gap={0}>
         <GridItem colSpan={7} bg="#2C3333">
-          <MediaSection currentTime={currentTime} isPlaying={isPlaying} />
+          <MediaSection
+            lastEvent={lastEvent}
+            finishEvtProcessing={finishEvtProcessing}
+            currentTime={currentTime}
+            isPlaying={isPlaying}
+          />
         </GridItem>
         <GridItem colSpan={1} bg="black" />
       </Grid>
