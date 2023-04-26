@@ -3,7 +3,7 @@ import SelectionPlaceholder from './SelectionPlaceholder';
 import Player from './Player';
 import styles from './MediaSection.module.css';
 
-function MediaSection({ isPlaying, currentTime, lastEvent, finishEvtProcessing }: MediaSectionProps) {
+function MediaSection({ isPlaying, currentTime, lastEvent, finishEvtProcessing, setIsPlaying }: MediaSectionProps) {
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
 
   const handleVideoSelect = (file: File | undefined) => {
@@ -21,6 +21,7 @@ function MediaSection({ isPlaying, currentTime, lastEvent, finishEvtProcessing }
           isPlaying={isPlaying}
           currentTime={currentTime}
           src={videoSrc}
+          setIsPlaying={setIsPlaying}
         />
       )}
     </div>
@@ -32,6 +33,7 @@ type MediaSectionProps = {
   currentTime: number;
   lastEvent: string | null;
   finishEvtProcessing: () => void;
+  setIsPlaying: (_s: boolean) => void;
 };
 
 export default MediaSection;

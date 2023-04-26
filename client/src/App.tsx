@@ -90,6 +90,7 @@ function App() {
         <GridItem colSpan={7} bg="#2C3333">
           <MediaSection
             lastEvent={lastEvent}
+            setIsPlaying={setIsPlaying}
             finishEvtProcessing={finishEvtProcessing}
             currentTime={currentTime}
             isPlaying={isPlaying}

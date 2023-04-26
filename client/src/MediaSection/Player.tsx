@@ -3,7 +3,7 @@ import { socket } from '../socket';
 
 import styles from './MediaSection.module.css';
 
-function Player({ src, isPlaying, currentTime, lastEvent, finishEvtProcessing }: PlayerProps) {
+function Player({ src, isPlaying, currentTime, lastEvent, finishEvtProcessing, setIsPlaying }: PlayerProps) {
   const playerRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -35,20 +35,22 @@ function Player({ src, isPlaying, currentTime, lastEvent, finishEvtProcessing }:
   }, [currentTime]);
 
   const onPlay = useCallback(() => {
+    setIsPlaying(true);
     if (lastEvent === 'videoPlayed') {
       return finishEvtProcessing();
     }
     socket.emit('videoPlayed', {
       time: playerRef.current?.currentTime,
     });
-  }, [finishEvtProcessing, lastEvent]);
+  }, [finishEvtProcessing, lastEvent, setIsPlaying]);
 
   const onPause = useCallback(() => {
+    setIsPlaying(false);
     if (lastEvent === 'videoPaused') {
       return finishEvtProcessing();
     }
     socket.emit('videoPaused');
-  }, [finishEvtProcessing, lastEvent]);
+  }, [finishEvtProcessing, lastEvent, setIsPlaying]);
 
   return (
     // eslint-disable-next-line jsx-a11y/media-has-caption
@@ -62,6 +64,7 @@ type PlayerProps = {
   currentTime: number;
   lastEvent: string | null;
   finishEvtProcessing: () => void;
+  setIsPlaying: (_s: boolean) => void;
 };
 
 export default Player;
