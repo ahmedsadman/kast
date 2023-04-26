@@ -84,7 +84,8 @@ function App() {
     <div className={styles.mainContainer}>
       <JoinModal
         loading={isLoading}
-        isOpen={showJoinModal && isSocketConnected}
+        isSocketConnected={isSocketConnected}
+        isOpen={showJoinModal}
         onClose={() => setShowJoinModal(false)}
         onSubmit={handleJoinModalSubmit}
       />
