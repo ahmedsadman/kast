@@ -38,7 +38,12 @@ function ChatSection({ messages }: ChatSectionProps) {
     <Flex h="100vh" direction="column" p={2}>
       <Box flex={1} overflow="auto" mb={5} p={3}>
         {messages.map((message) => (
-          <Message key={message.id} name={message.name} content={message.content} />
+          <Message
+            key={message.id}
+            name={message.name}
+            content={message.content}
+            systemMessage={message.systemMessage}
+          />
         ))}
         <div ref={messageEnd}></div>
       </Box>

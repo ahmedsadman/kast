@@ -8,4 +8,5 @@ export type MessageType = {
   id: string;
   content: string;
   name: string;
+  systemMessage: boolean;
 };
