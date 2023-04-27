@@ -3,7 +3,7 @@ import { socket } from '../socket';
 
 import styles from './MediaSection.module.css';
 
-function Player({ src, isPlaying, currentTime, lastEvent, finishEvtProcessing, setIsPlaying }: PlayerProps) {
+function Player({ src, isPlaying, currentTime, lastEvent, finishEvtProcessing, setIsPlaying, subtitle }: PlayerProps) {
   const playerRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -54,12 +54,16 @@ function Player({ src, isPlaying, currentTime, lastEvent, finishEvtProcessing, s
 
   return (
     // eslint-disable-next-line jsx-a11y/media-has-caption
-    <video ref={playerRef} className={styles.playerVideo} onPlay={onPlay} onPause={onPause} controls src={src} />
+    <video ref={playerRef} className={styles.playerVideo} onPlay={onPlay} onPause={onPause} controls>
+      <source src={src} />
+      {subtitle && <track label="English" kind="subtitles" src={subtitle} default />}
+    </video>
   );
 }
 
 type PlayerProps = {
   src: string;
+  subtitle: string | undefined;
   isPlaying: boolean;
   currentTime: number;
   lastEvent: string | null;

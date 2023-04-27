@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Grid, GridItem } from '@chakra-ui/react';
+import { Grid, GridItem, Box, Flex } from '@chakra-ui/react';
 import MediaSection from './MediaSection';
 import ChatSection from './ChatSection';
 import JoinModal from './JoinModal';
@@ -19,8 +19,15 @@ function App() {
   const [showJoinModal, setShowJoinModal] = useState(true);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [messages, setMessages] = useState<MessageType[]>([]);
+  const [subtitleFile, setSubtitleFile] = useState<string | undefined>(undefined);
 
   const [lastEvent, setLastEvent] = useState<string | null>(null);
+
+  // TODO: Do a proper refactor later
+  const handleSubtitleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    setSubtitleFile(file ? URL.createObjectURL(file) : undefined);
+  };
 
   const handleJoinModalSubmit = async (name: string) => {
     setIsLoading(true);
@@ -108,10 +115,17 @@ function App() {
             finishEvtProcessing={finishEvtProcessing}
             currentTime={currentTime}
             isPlaying={isPlaying}
+            subtitle={subtitleFile}
           />
         </GridItem>
         <GridItem colSpan={2} bg="black">
-          <ChatSection messages={messages} />
+          {/* Refactor later */}
+          <Box borderBottom="1px" m={2} p={2}>
+            <input type="file" onChange={handleSubtitleSelect} />
+          </Box>
+          <Flex h="95vh" direction="column" p={2}>
+            <ChatSection messages={messages} />
+          </Flex>
         </GridItem>
       </Grid>
     </div>
