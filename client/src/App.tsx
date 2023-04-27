@@ -68,16 +68,22 @@ function App() {
       setIsPlaying(false);
     }
 
+    function onNewMessage(data: { name: string; content: string }) {
+      console.log('new message', data);
+    }
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('videoPlayed', onVideoPlayed);
     socket.on('videoPaused', onVideoPaused);
+    socket.on('newMessage', onNewMessage);
 
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
       socket.off('videoPlayed', onVideoPlayed);
       socket.off('videoPaused', onVideoPaused);
+      socket.off('newMessage', onNewMessage);
     };
   }, []);
 

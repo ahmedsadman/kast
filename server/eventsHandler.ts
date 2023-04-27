@@ -1,4 +1,5 @@
 import { Server, Socket } from 'socket.io';
+import { randomUUID } from 'crypto';
 import rooms from './rooms';
 
 class EventsHandler {
@@ -18,6 +19,7 @@ class EventsHandler {
       this.#registerUserJoin(socket);
       this.#registerUserDisconnect(socket);
       this.#registerPlayerEvents(socket);
+      this.#registerChatEvents(socket);
     });
   }
 
@@ -60,6 +62,23 @@ class EventsHandler {
     socket.on('videoPaused', () => {
       const userRoom = rooms.getUserRoom(socket.id);
       socket.to(userRoom).emit('videoPaused', { id: socket.id });
+    });
+  }
+
+  #registerChatEvents(socket: Socket) {
+    socket.on('newMessage', (data) => {
+      const user = rooms.getUser(socket.id);
+      const { content } = data;
+
+      if (!user) {
+        return;
+      }
+
+      this.#io?.to(user.roomId).emit('newMessage', {
+        id: randomUUID(),
+        name: user.name,
+        content,
+      });
     });
   }
 }
