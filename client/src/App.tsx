@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Grid, GridItem } from '@chakra-ui/react';
 import MediaSection from './MediaSection';
+import ChatSection from './ChatSection';
 import JoinModal from './JoinModal';
 import InviteModal from './InviteModal';
 import { socket } from './socket';
@@ -90,8 +91,8 @@ function App() {
         onSubmit={handleJoinModalSubmit}
       />
       <InviteModal isOpen={showInviteModal} roomId={roomId} onClose={() => setShowInviteModal(false)} />
-      <Grid h="100vh" flex={1} templateColumns="repeat(8, 1fr)" gap={0}>
-        <GridItem colSpan={7} bg="#2C3333">
+      <Grid h="100vh" flex={1} templateColumns="repeat(12, 1fr)" gap={0}>
+        <GridItem colSpan={10} bg="#2C3333">
           <MediaSection
             lastEvent={lastEvent}
             setIsPlaying={setIsPlaying}
@@ -100,7 +101,9 @@ function App() {
             isPlaying={isPlaying}
           />
         </GridItem>
-        <GridItem colSpan={1} bg="black" />
+        <GridItem colSpan={2} bg="black">
+          <ChatSection />
+        </GridItem>
       </Grid>
     </div>
   );
