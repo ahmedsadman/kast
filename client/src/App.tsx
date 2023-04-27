@@ -6,6 +6,7 @@ import JoinModal from './JoinModal';
 import InviteModal from './InviteModal';
 import { socket } from './socket';
 import { pollUserDetails } from './services';
+import { MessageType } from './types';
 
 import styles from './App.module.css';
 
@@ -17,6 +18,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(true);
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [messages, setMessages] = useState<MessageType[]>([]);
 
   const [lastEvent, setLastEvent] = useState<string | null>(null);
 
@@ -68,7 +70,8 @@ function App() {
       setIsPlaying(false);
     }
 
-    function onNewMessage(data: { name: string; content: string }) {
+    function onNewMessage(data: MessageType) {
+      setMessages((prevMessages) => [...prevMessages, data]);
       console.log('new message', data);
     }
 
@@ -108,7 +111,7 @@ function App() {
           />
         </GridItem>
         <GridItem colSpan={2} bg="black">
-          <ChatSection />
+          <ChatSection messages={messages} />
         </GridItem>
       </Grid>
     </div>

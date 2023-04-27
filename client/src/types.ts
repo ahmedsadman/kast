@@ -3,3 +3,9 @@ export type User = {
   roomId: string;
   name: string;
 };
+
+export type MessageType = {
+  id: string;
+  content: string;
+  name: string;
+};

@@ -1,12 +1,14 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Flex, Input, HStack, IconButton, Box } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
 import Message from './Message';
+import { MessageType } from '../types';
 
 import { socket } from '../socket';
 
-function ChatSection() {
+function ChatSection({ messages }: ChatSectionProps) {
   const [messageText, setMessageText] = useState('');
+  const messageEnd = useRef<HTMLDivElement>(null);
 
   const handleMessageSend = useCallback(() => {
     socket.emit('newMessage', {
@@ -19,14 +21,17 @@ function ChatSection() {
     setMessageText(e.target.value);
   }, []);
 
+  useEffect(() => {
+    messageEnd.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   return (
     <Flex h="100vh" direction="column" p={2}>
       <Box flex={1} overflow="auto" mb={5} p={3}>
-        {Array(50)
-          .fill(0)
-          .map((i, _a) => (
-            <Message key={_a} name="TA" content="Hello world, how are you doing today? Thanks for asking this" />
-          ))}
+        {messages.map((message) => (
+          <Message key={message.id} name={message.name} content={message.content} />
+        ))}
+        <div ref={messageEnd}></div>
       </Box>
       <HStack flex={0}>
         <Input type="text" variant="outline" value={messageText} onChange={handleInputChange} />
@@ -35,5 +40,9 @@ function ChatSection() {
     </Flex>
   );
 }
+
+type ChatSectionProps = {
+  messages: MessageType[];
+};
 
 export default ChatSection;
