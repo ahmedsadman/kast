@@ -21,6 +21,15 @@ function ChatSection({ messages }: ChatSectionProps) {
     setMessageText(e.target.value);
   }, []);
 
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        handleMessageSend();
+      }
+    },
+    [handleMessageSend],
+  );
+
   useEffect(() => {
     messageEnd.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -34,7 +43,13 @@ function ChatSection({ messages }: ChatSectionProps) {
         <div ref={messageEnd}></div>
       </Box>
       <HStack flex={0}>
-        <Input type="text" variant="outline" value={messageText} onChange={handleInputChange} />
+        <Input
+          type="text"
+          variant="outline"
+          value={messageText}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+        />
         <IconButton colorScheme="blue" aria-label="Send message" icon={<CheckIcon />} onClick={handleMessageSend} />
       </HStack>
     </Flex>
