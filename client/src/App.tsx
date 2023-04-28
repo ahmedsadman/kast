@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Grid, GridItem, Box, Flex } from '@chakra-ui/react';
+import { Grid, GridItem, Flex } from '@chakra-ui/react';
 import MediaSection from './MediaSection';
 import ChatSection from './ChatSection';
 import JoinModal from './JoinModal';
@@ -107,7 +107,7 @@ function App() {
         onSubmit={handleJoinModalSubmit}
       />
       <InviteModal isOpen={showInviteModal} roomId={roomId} onClose={() => setShowInviteModal(false)} />
-      <Grid h="100vh" flex={1} templateColumns="repeat(12, 1fr)" gap={0}>
+      <Grid flex={1} templateColumns="repeat(12, 1fr)" gap={0}>
         <GridItem colSpan={10} bg="#2C3333">
           <MediaSection
             lastEvent={lastEvent}
@@ -119,11 +119,12 @@ function App() {
           />
         </GridItem>
         <GridItem colSpan={2} bg="black">
-          {/* Refactor later */}
-          <Box borderBottom="1px" m={2} p={2}>
-            <input type="file" onChange={handleSubtitleSelect} />
-          </Box>
-          <Flex h="95vh" direction="column" p={2}>
+          <Flex direction="column" flex={1} h="100%">
+            <input
+              type="file"
+              onChange={handleSubtitleSelect}
+              style={{ margin: 0, padding: '5px 2%', fontSize: '0.9em', borderBottom: '1px solid white' }}
+            />
             <ChatSection messages={messages} />
           </Flex>
         </GridItem>

@@ -1,6 +1,6 @@
 .container {
-    height: 97vh;
-    margin: 1em;
+    height: 100%;
+    padding: 1%;
     flex: 1;
     display: flex;
 }
@@ -19,7 +19,7 @@
 }
 
 .player_video {
-    width: 100%;
-    height: 98vh;
+    display: flex;
+    flex: 1;
     background-color: black;
 }

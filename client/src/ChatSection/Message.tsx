@@ -2,7 +2,7 @@ import { Avatar, HStack, Text } from '@chakra-ui/react';
 
 function Message({ name, content, systemMessage }: AvatarProps) {
   return (
-    <HStack mb={5}>
+    <HStack mb={4} pl="4%">
       <Avatar size="sm" name={name} mr={2} />
       <Text
         as={systemMessage ? 'samp' : undefined}

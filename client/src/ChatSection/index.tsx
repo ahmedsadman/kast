@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { Input, HStack, IconButton, Box } from '@chakra-ui/react';
+import { Input, HStack, IconButton, Box, Flex } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
 import Message from './Message';
 import { MessageType } from '../types';
@@ -35,8 +35,8 @@ function ChatSection({ messages }: ChatSectionProps) {
   }, [messages]);
 
   return (
-    <>
-      <Box flex={1} overflow="auto" mb={5} p={3}>
+    <Flex direction="column" flex={1} justifyContent="space-between">
+      <Box height={{ base: '84vh', xl: '84vh', '2xl': '88vh' }} overflow="auto" mt={5}>
         {messages.map((message) => (
           <Message
             key={message.id}
@@ -47,7 +47,7 @@ function ChatSection({ messages }: ChatSectionProps) {
         ))}
         <div ref={messageEnd}></div>
       </Box>
-      <HStack flex={0}>
+      <HStack flex={0} p={1}>
         <Input
           type="text"
           variant="outline"
@@ -57,7 +57,7 @@ function ChatSection({ messages }: ChatSectionProps) {
         />
         <IconButton colorScheme="blue" aria-label="Send message" icon={<CheckIcon />} onClick={handleMessageSend} />
       </HStack>
-    </>
+    </Flex>
   );
 }
 
