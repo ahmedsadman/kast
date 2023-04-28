@@ -3,7 +3,7 @@ import { socket } from '../socket';
 
 import styles from './MediaSection.module.css';
 
-function Player({ src, isPlaying, currentTime, lastEvent, finishEvtProcessing, setIsPlaying, subtitle }: PlayerProps) {
+function Player({ src, isPlaying, currentTime, lastEventTime, setIsPlaying, subtitle }: PlayerProps) {
   const playerRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -34,23 +34,29 @@ function Player({ src, isPlaying, currentTime, lastEvent, finishEvtProcessing, s
     playerRef.current.currentTime = currentTime;
   }, [currentTime]);
 
+  const shouldEmitEvent = useCallback(() => {
+    return Date.now() - lastEventTime >= 1000;
+  }, [lastEventTime]);
+
   const onPlay = useCallback(() => {
     setIsPlaying(true);
-    if (lastEvent === 'videoPlayed') {
-      return finishEvtProcessing();
+    console.log('called onPlay');
+
+    if (shouldEmitEvent()) {
+      socket.emit('videoPlayed', {
+        time: playerRef.current?.currentTime,
+      });
     }
-    socket.emit('videoPlayed', {
-      time: playerRef.current?.currentTime,
-    });
-  }, [finishEvtProcessing, lastEvent, setIsPlaying]);
+  }, [shouldEmitEvent, setIsPlaying]);
 
   const onPause = useCallback(() => {
     setIsPlaying(false);
-    if (lastEvent === 'videoPaused') {
-      return finishEvtProcessing();
+    console.log('called onPause');
+
+    if (shouldEmitEvent()) {
+      socket.emit('videoPaused');
     }
-    socket.emit('videoPaused');
-  }, [finishEvtProcessing, lastEvent, setIsPlaying]);
+  }, [shouldEmitEvent, setIsPlaying]);
 
   return (
     // eslint-disable-next-line jsx-a11y/media-has-caption
@@ -66,8 +72,7 @@ type PlayerProps = {
   subtitle: string | undefined;
   isPlaying: boolean;
   currentTime: number;
-  lastEvent: string | null;
-  finishEvtProcessing: () => void;
+  lastEventTime: number;
   setIsPlaying: (_s: boolean) => void;
 };
 

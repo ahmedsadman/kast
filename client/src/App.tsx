@@ -20,8 +20,7 @@ function App() {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [subtitleFile, setSubtitleFile] = useState<string | undefined>(undefined);
-
-  const [lastEvent, setLastEvent] = useState<string | null>(null);
+  const [lastPlayerEvtTime, setLastPlayerEvtTime] = useState<number>(Date.now());
 
   // TODO: Do a proper refactor later
   const handleSubtitleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,10 +47,6 @@ function App() {
     }
   };
 
-  const finishEvtProcessing = () => {
-    setLastEvent(null);
-  };
-
   useEffect(() => {
     function onConnect() {
       if (socket.recovered) {
@@ -66,20 +61,20 @@ function App() {
 
     function onVideoPlayed(data: { id: string; time: number }) {
       console.log('onVideoPlayed');
-      setLastEvent('videoPlayed');
+      setLastPlayerEvtTime(Date.now());
       setIsPlaying(true);
       setCurrentTime(data.time);
     }
 
     function onVideoPaused() {
       console.log('onVideoPaused');
-      setLastEvent('videoPaused');
+      setLastPlayerEvtTime(Date.now());
       setIsPlaying(false);
     }
 
     function onNewMessage(data: MessageType) {
       setMessages((prevMessages) => [...prevMessages, data]);
-      console.log('new message', data);
+      // console.log('new message', data);
     }
 
     socket.on('connect', onConnect);
@@ -110,9 +105,8 @@ function App() {
       <Grid flex={1} templateColumns="repeat(12, 1fr)" gap={0}>
         <GridItem colSpan={10} bg="#2C3333">
           <MediaSection
-            lastEvent={lastEvent}
+            lastEventTime={lastPlayerEvtTime}
             setIsPlaying={setIsPlaying}
-            finishEvtProcessing={finishEvtProcessing}
             currentTime={currentTime}
             isPlaying={isPlaying}
             subtitle={subtitleFile}
