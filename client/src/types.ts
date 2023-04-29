@@ -7,6 +7,6 @@ export type User = {
 export type MessageType = {
   id: string;
   content: string;
-  name: string;
+  user: User;
   systemMessage: boolean;
 };

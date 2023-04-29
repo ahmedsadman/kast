@@ -1,6 +1,6 @@
 import { Server, Socket } from 'socket.io';
 import { randomUUID } from 'crypto';
-import rooms from './rooms';
+import rooms, { User } from './rooms';
 
 class EventsHandler {
   #io: Server | null = null;
@@ -36,7 +36,7 @@ class EventsHandler {
 
       socket.join(finalRoomId);
 
-      rooms.addUser(finalRoomId, name, socket.id);
+      const newUser = rooms.addUser(finalRoomId, name, socket.id);
 
       this.#io?.to(finalRoomId).emit('roomUserJoin', {
         id: socket.id,
@@ -44,7 +44,7 @@ class EventsHandler {
         name,
       });
 
-      this.#io?.to(finalRoomId).emit('newMessage', this.#generateChatMessage(name, `${name} joined the room`, true));
+      this.#io?.to(finalRoomId).emit('newMessage', this.#generateChatMessage(newUser, `${name} joined the room`, true));
     });
   }
 
@@ -57,9 +57,7 @@ class EventsHandler {
         return;
       }
 
-      this.#io
-        ?.to(user.roomId)
-        .emit('newMessage', this.#generateChatMessage(user.name, `${user.name} left the room`, true));
+      this.#io?.to(user.roomId).emit('newMessage', this.#generateChatMessage(user, `${user.name} left the room`, true));
       rooms.removeUser(socket.id);
     });
   }
@@ -73,7 +71,7 @@ class EventsHandler {
       }
 
       socket.to(user.roomId).emit('videoPlayed', { id: socket.id, time: data.time });
-      this.#io?.to(user.roomId).emit('newMessage', this.#generateChatMessage(user.name, 'Video started playing', true));
+      this.#io?.to(user.roomId).emit('newMessage', this.#generateChatMessage(user, 'Video started playing', true));
     });
 
     socket.on('videoPaused', () => {
@@ -84,14 +82,14 @@ class EventsHandler {
       }
 
       socket.to(user.roomId).emit('videoPaused', { id: socket.id });
-      this.#io?.to(user.roomId).emit('newMessage', this.#generateChatMessage(user.name, 'Video paused', true));
+      this.#io?.to(user.roomId).emit('newMessage', this.#generateChatMessage(user, 'Video paused', true));
     });
   }
 
-  #generateChatMessage(name: string, content: string, systemMessage = false) {
+  #generateChatMessage(user: User, content: string, systemMessage = false) {
     return {
       id: randomUUID(),
-      name,
+      user,
       content,
       systemMessage,
     };
@@ -106,7 +104,7 @@ class EventsHandler {
         return;
       }
 
-      this.#io?.to(user.roomId).emit('newMessage', this.#generateChatMessage(user.name, content));
+      this.#io?.to(user.roomId).emit('newMessage', this.#generateChatMessage(user, content));
     });
   }
 }

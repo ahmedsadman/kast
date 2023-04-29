@@ -40,7 +40,7 @@ function ChatSection({ messages }: ChatSectionProps) {
         {messages.map((message) => (
           <Message
             key={message.id}
-            name={message.name}
+            name={message.user.name}
             content={message.content}
             systemMessage={message.systemMessage}
           />

@@ -24,6 +24,7 @@ class Rooms {
   addUser(roomId: string, name: string, userId: string) {
     this.#roomsMap[roomId]['users'].push({ name, id: userId, roomId });
     this.#userRoomMap[userId] = roomId;
+    return { name, id: userId, roomId };
   }
 
   removeUser(userId: string) {
@@ -74,7 +75,7 @@ class Rooms {
   }
 }
 
-type User = {
+export type User = {
   id: string;
   name: string;
   roomId: string;
