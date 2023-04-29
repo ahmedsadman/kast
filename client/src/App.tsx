@@ -14,7 +14,22 @@ function App() {
   // TODO: Implement contexts
   const [roomId, setRoomId] = useState<string | null>(null);
   const [isSocketConnected, setIsSocketConnected] = useState(socket.connected);
-  const [isPlaying, setIsPlaying] = useState(false);
+
+  /*  
+    An explanation why NULL state is needed for isPlaying:
+
+    Let's say two clients, A and B
+    Scenario 1 (A to B): isPlaying == false, A -> Play -> B plays -> B pause -> A pause (isPlaying == false)
+
+    Scenario 2 (A to B): isPlaying == null, A -> Play ->  B plays -> B pause -> A pause (isPlaying == false)
+
+    In Scenario 1, isPlaying is always false. But the <video> element is maintained by Refs. Unless the isPlaying changes,
+    neither pause nor play will get trigerred. On the other hand, Scenario 2 changes the state from null -> false, which
+    triggers the change. Notice that the NULL is required only for the first event, any consecutive events after that
+    will properly change player state because of how events are setup
+  */
+  const [isPlaying, setIsPlaying] = useState<boolean | null>(null);
+
   const [currentTime, setCurrentTime] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(true);
@@ -117,7 +132,6 @@ function App() {
           <MediaSection
             borderColor={borderColor}
             lastEventTime={lastPlayerEvtTime}
-            setIsPlaying={setIsPlaying}
             currentTime={currentTime}
             isPlaying={isPlaying}
             subtitle={subtitleFile}

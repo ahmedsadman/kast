@@ -3,7 +3,7 @@ import { socket } from '../socket';
 
 import styles from './MediaSection.module.css';
 
-function Player({ src, isPlaying, currentTime, lastEventTime, setIsPlaying, subtitle, borderColor }: PlayerProps) {
+function Player({ src, isPlaying, currentTime, lastEventTime, subtitle, borderColor }: PlayerProps) {
   const playerRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -39,7 +39,6 @@ function Player({ src, isPlaying, currentTime, lastEventTime, setIsPlaying, subt
   }, [lastEventTime]);
 
   const onPlay = useCallback(() => {
-    setIsPlaying(true);
     console.log('called onPlay');
 
     if (shouldEmitEvent()) {
@@ -47,16 +46,15 @@ function Player({ src, isPlaying, currentTime, lastEventTime, setIsPlaying, subt
         time: playerRef.current?.currentTime,
       });
     }
-  }, [shouldEmitEvent, setIsPlaying]);
+  }, [shouldEmitEvent]);
 
   const onPause = useCallback(() => {
-    setIsPlaying(false);
     console.log('called onPause');
 
     if (shouldEmitEvent()) {
       socket.emit('videoPaused');
     }
-  }, [shouldEmitEvent, setIsPlaying]);
+  }, [shouldEmitEvent]);
 
   return (
     // eslint-disable-next-line jsx-a11y/media-has-caption
@@ -77,10 +75,9 @@ function Player({ src, isPlaying, currentTime, lastEventTime, setIsPlaying, subt
 type PlayerProps = {
   src: string;
   subtitle: string | undefined;
-  isPlaying: boolean;
+  isPlaying: boolean | null;
   currentTime: number;
   lastEventTime: number;
-  setIsPlaying: (_s: boolean) => void;
   borderColor: string;
 };
 
