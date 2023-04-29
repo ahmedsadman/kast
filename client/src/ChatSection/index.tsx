@@ -1,12 +1,13 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Input, HStack, IconButton, Box, Flex } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
+import { debounce } from 'lodash';
 import Message from './Message';
 import { MessageType } from '../types';
 
 import { socket } from '../socket';
 
-function ChatSection({ messages }: ChatSectionProps) {
+function ChatSection({ messages, toggleBorderEffect }: ChatSectionProps) {
   const [messageText, setMessageText] = useState('');
   const messageEnd = useRef<HTMLDivElement>(null);
 
@@ -30,9 +31,17 @@ function ChatSection({ messages }: ChatSectionProps) {
     [handleMessageSend],
   );
 
+  const notifyNewMessage = useCallback(debounce(toggleBorderEffect, 3000), [toggleBorderEffect]);
+
   useEffect(() => {
     messageEnd.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+
+    const lastMessage = messages[messages.length - 1];
+
+    if (lastMessage?.user.id !== socket.id && !lastMessage?.systemMessage) {
+      notifyNewMessage();
+    }
+  }, [messages, notifyNewMessage]);
 
   return (
     <Flex direction="column" flex={1} justifyContent="space-between">
@@ -63,6 +72,7 @@ function ChatSection({ messages }: ChatSectionProps) {
 
 type ChatSectionProps = {
   messages: MessageType[];
+  toggleBorderEffect: () => void;
 };
 
 export default ChatSection;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Grid, GridItem, Flex } from '@chakra-ui/react';
 import MediaSection from './MediaSection';
 import ChatSection from './ChatSection';
@@ -11,6 +11,7 @@ import { MessageType } from './types';
 import styles from './App.module.css';
 
 function App() {
+  // TODO: Implement contexts
   const [roomId, setRoomId] = useState<string | null>(null);
   const [isSocketConnected, setIsSocketConnected] = useState(socket.connected);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -21,12 +22,21 @@ function App() {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [subtitleFile, setSubtitleFile] = useState<string | undefined>(undefined);
   const [lastPlayerEvtTime, setLastPlayerEvtTime] = useState<number>(Date.now());
+  const [borderColor, setBorderColor] = useState('transparent');
 
   // TODO: Do a proper refactor later
   const handleSubtitleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     setSubtitleFile(file ? URL.createObjectURL(file) : undefined);
   };
+
+  const toggleBorderEffect = useCallback(() => {
+    setBorderColor((prevColor) => (prevColor === 'red' ? 'transparent' : 'red'));
+    setTimeout(() => {
+      console.log('resetting');
+      setBorderColor('transparent');
+    }, 2700);
+  }, []);
 
   const handleJoinModalSubmit = async (name: string) => {
     setIsLoading(true);
@@ -105,6 +115,7 @@ function App() {
       <Grid flex={1} templateColumns="repeat(12, 1fr)" gap={0}>
         <GridItem colSpan={10} bg="#2C3333">
           <MediaSection
+            borderColor={borderColor}
             lastEventTime={lastPlayerEvtTime}
             setIsPlaying={setIsPlaying}
             currentTime={currentTime}
@@ -119,7 +130,7 @@ function App() {
               onChange={handleSubtitleSelect}
               style={{ margin: 0, padding: '5px 2%', fontSize: '0.9em', borderBottom: '1px solid white' }}
             />
-            <ChatSection messages={messages} />
+            <ChatSection messages={messages} toggleBorderEffect={toggleBorderEffect} />
           </Flex>
         </GridItem>
       </Grid>
