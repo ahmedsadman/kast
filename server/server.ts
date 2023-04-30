@@ -15,7 +15,7 @@ const server = createServer(app);
 const io = new Server(server, {
   path: '/socket',
   cors: {
-    origin: ['https://mykast.netlify.app', 'http://127.0.0.1:1420', 'http://localhost:1420'],
+    origin: ['https://mykast.netlify.app', 'http://127.0.0.1:5173', 'http://localhost:5173'],
   },
   connectionStateRecovery: {
     maxDisconnectionDuration: 2 * 60 * 1000,
