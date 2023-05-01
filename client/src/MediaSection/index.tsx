@@ -1,29 +1,23 @@
-import { useState } from 'react';
+import { usePlayer } from '../contexts/PlayerContext';
 import SelectionPlaceholder from './SelectionPlaceholder';
 import Player from './Player';
 import styles from './MediaSection.module.css';
 
-function MediaSection({ lastEventTime, subtitle, borderColor }: MediaSectionProps) {
-  const [videoSrc, setVideoSrc] = useState<string | null>(null);
-
-  const handleVideoSelect = (file: File | undefined) => {
-    setVideoSrc(file ? URL.createObjectURL(file) : null);
-  };
+function MediaSection({ borderColor }: MediaSectionProps) {
+  const playerState = usePlayer();
 
   return (
     <div className={styles.container}>
-      {!videoSrc ? (
-        <SelectionPlaceholder onChange={handleVideoSelect} />
+      {!playerState?.videoFile ? (
+        <SelectionPlaceholder />
       ) : (
-        <Player lastEventTime={lastEventTime} subtitle={subtitle} src={videoSrc} borderColor={borderColor} />
+        <Player src={playerState.videoFile} borderColor={borderColor} />
       )}
     </div>
   );
 }
 
 type MediaSectionProps = {
-  lastEventTime: number;
-  subtitle?: string;
   borderColor: string;
 };
 

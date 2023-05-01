@@ -1,12 +1,16 @@
 import React, { useRef } from 'react';
 import { Button } from '@chakra-ui/react';
+import { usePlayerDispatch } from '../contexts/PlayerContext';
 import styles from './MediaSection.module.css';
 
-function SelectionPlaceholder({ onChange }: SelectionPlaceholderProps) {
+function SelectionPlaceholder() {
   const inputFileRef = useRef<HTMLInputElement>(null);
+  const playerDispatch = usePlayerDispatch();
 
   const handleSelectVideo = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(event.target.files?.[0]);
+    const file = event.target.files?.[0];
+    const fileUrl = file ? URL.createObjectURL(file) : undefined;
+    playerDispatch?.({ type: 'update_video_file', payload: { file: fileUrl } });
   };
 
   return (
@@ -26,9 +30,5 @@ function SelectionPlaceholder({ onChange }: SelectionPlaceholderProps) {
     </div>
   );
 }
-
-type SelectionPlaceholderProps = {
-  onChange: (_f: File | undefined) => void;
-};
 
 export default SelectionPlaceholder;

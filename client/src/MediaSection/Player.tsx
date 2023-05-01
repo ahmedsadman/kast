@@ -4,7 +4,7 @@ import { socket } from '../socket';
 
 import styles from './MediaSection.module.css';
 
-function Player({ src, lastEventTime, subtitle, borderColor }: PlayerProps) {
+function Player({ src, borderColor }: PlayerProps) {
   const playerRef = useRef<HTMLVideoElement>(null);
   const playerState = usePlayer();
 
@@ -37,8 +37,11 @@ function Player({ src, lastEventTime, subtitle, borderColor }: PlayerProps) {
   }, [playerState?.currentTime]);
 
   const shouldEmitEvent = useCallback(() => {
-    return Date.now() - lastEventTime >= 1000;
-  }, [lastEventTime]);
+    if (!playerState?.lastEventTime) {
+      return true;
+    }
+    return Date.now() - playerState.lastEventTime >= 1000;
+  }, [playerState]);
 
   const onPlay = useCallback(() => {
     console.log('called onPlay');
@@ -69,15 +72,13 @@ function Player({ src, lastEventTime, subtitle, borderColor }: PlayerProps) {
       controls
     >
       <source src={src} />
-      {subtitle && <track label="English" kind="subtitles" src={subtitle} default />}
+      {playerState?.subtitleFile && <track label="English" kind="subtitles" src={playerState.subtitleFile} default />}
     </video>
   );
 }
 
 type PlayerProps = {
   src: string;
-  subtitle: string | undefined;
-  lastEventTime: number;
   borderColor: string;
 };
 

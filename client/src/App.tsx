@@ -19,16 +19,20 @@ function App() {
   const [showJoinModal, setShowJoinModal] = useState(true);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [messages, setMessages] = useState<MessageType[]>([]);
-  const [subtitleFile, setSubtitleFile] = useState<string | undefined>(undefined);
-  const [lastPlayerEvtTime, setLastPlayerEvtTime] = useState<number>(Date.now());
   const [borderColor, setBorderColor] = useState('transparent');
 
   const playerDispatch = usePlayerDispatch();
 
-  // TODO: Do a proper refactor later
+  // TODO: Do a proper refactor later, moving subtitle handling to separate component
   const handleSubtitleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    setSubtitleFile(file ? URL.createObjectURL(file) : undefined);
+    const fileUrl = file ? URL.createObjectURL(file) : undefined;
+    playerDispatch?.({
+      type: 'update_subtitle_file',
+      payload: {
+        file: fileUrl,
+      },
+    });
   };
 
   const toggleBorderEffect = useCallback(() => {
@@ -72,14 +76,12 @@ function App() {
 
     function onVideoPlayed(data: { id: string; time: number }) {
       console.log('onVideoPlayed');
-      setLastPlayerEvtTime(Date.now());
       playerDispatch?.({ type: 'played' });
       playerDispatch?.({ type: 'update_time', payload: { time: data.time } });
     }
 
     function onVideoPaused() {
       console.log('onVideoPaused');
-      setLastPlayerEvtTime(Date.now());
       playerDispatch?.({ type: 'paused' });
     }
 
@@ -115,7 +117,7 @@ function App() {
       <InviteModal isOpen={showInviteModal} roomId={roomId} onClose={() => setShowInviteModal(false)} />
       <Grid flex={1} templateColumns="repeat(12, 1fr)" gap={0}>
         <GridItem colSpan={10} bg="#2C3333">
-          <MediaSection borderColor={borderColor} lastEventTime={lastPlayerEvtTime} subtitle={subtitleFile} />
+          <MediaSection borderColor={borderColor} />
         </GridItem>
         <GridItem colSpan={2} bg="black">
           <Flex direction="column" flex={1} h="100%">

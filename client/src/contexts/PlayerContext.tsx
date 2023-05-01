@@ -21,26 +21,40 @@ export function usePlayerDispatch() {
   return useContext(PlayerContextDispatch);
 }
 
-function playerReducer(state: PlayerState, action: Action | UpdateTimeAction): PlayerState {
+function playerReducer(state: PlayerState, action: ActionUnion): PlayerState {
   switch (action.type) {
-    case 'paused': {
+    case 'paused':
       return {
         ...state,
         isPlaying: false,
+        lastEventTime: Date.now(),
       };
-    }
-    case 'played': {
+
+    case 'played':
       return {
         ...state,
         isPlaying: true,
+        lastEventTime: Date.now(),
       };
-    }
-    case 'update_time': {
+
+    case 'update_time':
       return {
         ...state,
-        currentTime: (action as UpdateTimeAction).payload?.time || 0,
+        currentTime: (action as UpdateTime).payload?.time || 0,
       };
-    }
+
+    case 'update_video_file':
+      return {
+        ...state,
+        videoFile: (action as UpdateFile).payload?.file,
+      };
+
+    case 'update_subtitle_file':
+      return {
+        ...state,
+        subtitleFile: (action as UpdateFile).payload?.file,
+      };
+
     default:
       return state;
   }
@@ -49,11 +63,17 @@ function playerReducer(state: PlayerState, action: Action | UpdateTimeAction): P
 const initialState: PlayerState = {
   isPlaying: null,
   currentTime: 0,
+  subtitleFile: undefined,
+  videoFile: undefined,
+  lastEventTime: Date.now(),
 };
 
 type PlayerState = {
   isPlaying: boolean | null;
   currentTime: number;
+  videoFile: string | undefined;
+  subtitleFile: string | undefined;
+  lastEventTime: number;
 };
 
 type Action<T = object> = {
@@ -61,6 +81,9 @@ type Action<T = object> = {
   payload?: T;
 };
 
-export type UpdateTimeAction = Action<{ time: number }>;
+type UpdateTime = Action<{ time: number }>;
+type UpdateFile = Action<{ file: string | undefined }>;
+
+type ActionUnion = Action | UpdateTime | UpdateFile;
 
 type Dispatch = (_action: Action) => void;
