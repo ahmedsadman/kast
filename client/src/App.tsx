@@ -6,6 +6,7 @@ import JoinModal from './JoinModal';
 import InviteModal from './InviteModal';
 import { socket } from './socket';
 import { pollUserDetails } from './services';
+import { usePlayerDispatch } from './contexts/PlayerContext';
 import { MessageType } from './types';
 
 import styles from './App.module.css';
@@ -14,23 +15,6 @@ function App() {
   // TODO: Implement contexts
   const [roomId, setRoomId] = useState<string | null>(null);
   const [isSocketConnected, setIsSocketConnected] = useState(socket.connected);
-
-  /*  
-    An explanation why NULL state is needed for isPlaying:
-
-    Let's say two clients, A and B
-    Scenario 1 (A to B): isPlaying == false, A -> Play -> B plays -> B pause -> A pause (isPlaying == false)
-
-    Scenario 2 (A to B): isPlaying == null, A -> Play ->  B plays -> B pause -> A pause (isPlaying == false)
-
-    In Scenario 1, isPlaying is always false. But the <video> element is maintained by Refs. Unless the isPlaying changes,
-    neither pause nor play will get trigerred. On the other hand, Scenario 2 changes the state from null -> false, which
-    triggers the change. Notice that the NULL is required only for the first event, any consecutive events after that
-    will properly change player state because of how events are setup
-  */
-  const [isPlaying, setIsPlaying] = useState<boolean | null>(null);
-
-  const [currentTime, setCurrentTime] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(true);
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -38,6 +22,8 @@ function App() {
   const [subtitleFile, setSubtitleFile] = useState<string | undefined>(undefined);
   const [lastPlayerEvtTime, setLastPlayerEvtTime] = useState<number>(Date.now());
   const [borderColor, setBorderColor] = useState('transparent');
+
+  const playerDispatch = usePlayerDispatch();
 
   // TODO: Do a proper refactor later
   const handleSubtitleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,14 +73,14 @@ function App() {
     function onVideoPlayed(data: { id: string; time: number }) {
       console.log('onVideoPlayed');
       setLastPlayerEvtTime(Date.now());
-      setIsPlaying(true);
-      setCurrentTime(data.time);
+      playerDispatch?.({ type: 'played' });
+      playerDispatch?.({ type: 'update_time', payload: { time: data.time } });
     }
 
     function onVideoPaused() {
       console.log('onVideoPaused');
       setLastPlayerEvtTime(Date.now());
-      setIsPlaying(false);
+      playerDispatch?.({ type: 'paused' });
     }
 
     function onNewMessage(data: MessageType) {
@@ -115,7 +101,7 @@ function App() {
       socket.off('videoPaused', onVideoPaused);
       socket.off('newMessage', onNewMessage);
     };
-  }, []);
+  }, [playerDispatch]);
 
   return (
     <div className={styles.mainContainer}>
@@ -129,13 +115,7 @@ function App() {
       <InviteModal isOpen={showInviteModal} roomId={roomId} onClose={() => setShowInviteModal(false)} />
       <Grid flex={1} templateColumns="repeat(12, 1fr)" gap={0}>
         <GridItem colSpan={10} bg="#2C3333">
-          <MediaSection
-            borderColor={borderColor}
-            lastEventTime={lastPlayerEvtTime}
-            currentTime={currentTime}
-            isPlaying={isPlaying}
-            subtitle={subtitleFile}
-          />
+          <MediaSection borderColor={borderColor} lastEventTime={lastPlayerEvtTime} subtitle={subtitleFile} />
         </GridItem>
         <GridItem colSpan={2} bg="black">
           <Flex direction="column" flex={1} h="100%">

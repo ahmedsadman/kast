@@ -1,10 +1,12 @@
 import { useEffect, useCallback, useRef } from 'react';
+import { usePlayer } from '../contexts/PlayerContext';
 import { socket } from '../socket';
 
 import styles from './MediaSection.module.css';
 
-function Player({ src, isPlaying, currentTime, lastEventTime, subtitle, borderColor }: PlayerProps) {
+function Player({ src, lastEventTime, subtitle, borderColor }: PlayerProps) {
   const playerRef = useRef<HTMLVideoElement>(null);
+  const playerState = usePlayer();
 
   useEffect(() => {
     async function handlePlay() {
@@ -13,7 +15,7 @@ function Player({ src, isPlaying, currentTime, lastEventTime, subtitle, borderCo
       }
 
       try {
-        if (isPlaying) {
+        if (playerState?.isPlaying) {
           await playerRef.current.play();
         } else {
           playerRef.current.pause();
@@ -24,15 +26,15 @@ function Player({ src, isPlaying, currentTime, lastEventTime, subtitle, borderCo
     }
 
     handlePlay();
-  }, [isPlaying]);
+  }, [playerState?.isPlaying]);
 
   useEffect(() => {
     if (!playerRef.current) {
       return;
     }
 
-    playerRef.current.currentTime = currentTime;
-  }, [currentTime]);
+    playerRef.current.currentTime = playerState?.currentTime || 0;
+  }, [playerState?.currentTime]);
 
   const shouldEmitEvent = useCallback(() => {
     return Date.now() - lastEventTime >= 1000;
@@ -75,8 +77,6 @@ function Player({ src, isPlaying, currentTime, lastEventTime, subtitle, borderCo
 type PlayerProps = {
   src: string;
   subtitle: string | undefined;
-  isPlaying: boolean | null;
-  currentTime: number;
   lastEventTime: number;
   borderColor: string;
 };
