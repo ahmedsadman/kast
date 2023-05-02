@@ -47,6 +47,7 @@ function playerReducer(state: PlayerState, action: ActionUnion): PlayerState {
       return {
         ...state,
         videoFile: (action as UpdateFile).payload?.file,
+        videoFileName: (action as UpdateFile).payload?.fileName,
       };
 
     case 'update_subtitle_file':
@@ -64,7 +65,8 @@ const initialState: PlayerState = {
   isPlaying: null,
   currentTime: 0,
   subtitleFile: undefined,
-  videoFile: undefined,
+  videoFileName: undefined,
+  videoFile: undefined, // TODO: Rename to videoFileUrl
   lastEventTime: Date.now(),
 };
 
@@ -72,6 +74,7 @@ type PlayerState = {
   isPlaying: boolean | null;
   currentTime: number;
   videoFile: string | undefined;
+  videoFileName: string | undefined;
   subtitleFile: string | undefined;
   lastEventTime: number;
 };
@@ -82,7 +85,7 @@ type Action<T = object> = {
 };
 
 type UpdateTime = Action<{ time: number }>;
-type UpdateFile = Action<{ file: string | undefined }>;
+type UpdateFile = Action<{ file: string | undefined; fileName: string | undefined }>;
 
 type ActionUnion = Action | UpdateTime | UpdateFile;
 

@@ -45,7 +45,7 @@ function MediaSection({ borderColor }: MediaSectionProps) {
         <SelectionPlaceholder />
       ) : (
         <div className={styles.mainContainer}>
-          <ActionsMenu menuItems={menuItems} />
+          <ActionsMenu fileName={playerState.videoFileName} menuItems={menuItems} />
           <Player src={playerState.videoFile} borderColor={borderColor} />
         </div>
       )}

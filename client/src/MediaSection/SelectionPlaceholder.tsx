@@ -10,7 +10,7 @@ function SelectionPlaceholder() {
   const handleSelectVideo = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     const fileUrl = file ? URL.createObjectURL(file) : undefined;
-    playerDispatch?.({ type: 'update_video_file', payload: { file: fileUrl } });
+    playerDispatch?.({ type: 'update_video_file', payload: { file: fileUrl, fileName: file?.name } });
   };
 
   return (
