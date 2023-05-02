@@ -23,18 +23,6 @@ function App() {
 
   const playerDispatch = usePlayerDispatch();
 
-  // TODO: Do a proper refactor later, moving subtitle handling to separate component
-  const handleSubtitleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    const fileUrl = file ? URL.createObjectURL(file) : undefined;
-    playerDispatch?.({
-      type: 'update_subtitle_file',
-      payload: {
-        file: fileUrl,
-      },
-    });
-  };
-
   const toggleBorderEffect = useCallback(() => {
     setBorderColor((prevColor) => (prevColor === 'red' ? 'transparent' : 'red'));
     setTimeout(() => {
@@ -121,11 +109,7 @@ function App() {
         </GridItem>
         <GridItem colSpan={2} bg="black">
           <Flex direction="column" flex={1} h="100%">
-            <input
-              type="file"
-              onChange={handleSubtitleSelect}
-              style={{ margin: 0, padding: '5px 2%', fontSize: '0.9em', borderBottom: '1px solid white' }}
-            />
+            <div style={{ padding: '5px 2%', alignSelf: 'center' }}>kast</div>
             <ChatSection messages={messages} toggleBorderEffect={toggleBorderEffect} />
           </Flex>
         </GridItem>

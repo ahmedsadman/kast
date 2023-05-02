@@ -1,7 +1,7 @@
 import { Flex, Menu, MenuButton, MenuItem, Button, MenuList, IconButton, Tooltip } from '@chakra-ui/react';
 import { ChevronDownIcon, LinkIcon } from '@chakra-ui/icons';
 
-function ActionsMenu() {
+function ActionsMenu({ menuItems }: ActionsMenuProps) {
   return (
     <Flex alignSelf="stretch" justifyContent="space-between" alignItems="center" m={1}>
       <div>Hello</div>
@@ -22,14 +22,26 @@ function ActionsMenu() {
           <MenuButton as={Button} colorScheme="blue" rightIcon={<ChevronDownIcon />}>
             Actions
           </MenuButton>
-          <MenuList textColor="black">
-            <MenuItem>Change file</MenuItem>
-            <MenuItem>Add/Update subtitle</MenuItem>
+          <MenuList>
+            {menuItems.map((menu) => (
+              <MenuItem textColor="black" key={menu.label} onClick={menu.action}>
+                {menu.label}
+              </MenuItem>
+            ))}
           </MenuList>
         </Menu>
       </div>
     </Flex>
   );
 }
+
+type Menu = {
+  label: string;
+  action: () => void;
+};
+
+type ActionsMenuProps = {
+  menuItems: Menu[];
+};
 
 export default ActionsMenu;
