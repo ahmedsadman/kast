@@ -1,9 +1,23 @@
-import { Avatar, HStack, Text } from '@chakra-ui/react';
+import { useCallback } from 'react';
+import { Avatar, HStack, Text, Tooltip } from '@chakra-ui/react';
 
 function Message({ name, content, systemMessage }: AvatarProps) {
+  const getInitials = useCallback((name: string) => {
+    const parts = name.split(' ');
+
+    if (parts.length > 1) {
+      return `${parts[0].charAt(0).toUpperCase()}${parts[1].charAt(0).toUpperCase()}`;
+    }
+
+    return parts[0].charAt(0).toUpperCase();
+  }, []);
+
   return (
     <HStack mb={4} pl="4%">
-      <Avatar size="sm" name={name} mr={2} />
+      <Tooltip label={name}>
+        <Avatar size="sm" name={name} mr={2} getInitials={getInitials} />
+      </Tooltip>
+
       <Text
         as={systemMessage ? 'samp' : undefined}
         color={systemMessage ? 'blue.300' : 'white'}
