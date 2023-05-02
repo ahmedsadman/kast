@@ -18,8 +18,15 @@
     display: none;
 }
 
-.player_video {
+.main_container {
     display: flex;
+    flex-direction: column;
     flex: 1;
-    background-color: black;
+    justify-content: center;
+    align-items: center;
+}
+
+.player_video {
+    width: 100%;
+    height: auto;
 }

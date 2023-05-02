@@ -1,6 +1,8 @@
 import { usePlayer } from '../contexts/PlayerContext';
 import SelectionPlaceholder from './SelectionPlaceholder';
 import Player from './Player';
+import ActionsMenu from './ActionsMenu';
+
 import styles from './MediaSection.module.css';
 
 function MediaSection({ borderColor }: MediaSectionProps) {
@@ -11,7 +13,10 @@ function MediaSection({ borderColor }: MediaSectionProps) {
       {!playerState?.videoFile ? (
         <SelectionPlaceholder />
       ) : (
-        <Player src={playerState.videoFile} borderColor={borderColor} />
+        <div className={styles.mainContainer}>
+          <ActionsMenu />
+          <Player src={playerState.videoFile} borderColor={borderColor} />
+        </div>
       )}
     </div>
   );
