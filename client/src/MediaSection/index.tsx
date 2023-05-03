@@ -39,9 +39,7 @@ function MediaSection({ borderColor, openInviteModal }: MediaSectionProps) {
     () => [
       {
         label: 'Change Video File',
-        action: () => {
-          console.log('clicked');
-        },
+        action: () => videoInputRef.current?.click(),
       },
       { label: 'Add/Update Subtitles', action: () => subtitleInputRef.current?.click() },
     ],

@@ -45,7 +45,7 @@ function playerReducer(state: PlayerState, action: ActionUnion): PlayerState {
 
     case 'update_video_file':
       return {
-        ...state,
+        ...initialState,
         videoFileUrl: (action as UpdateFile).payload?.file,
         videoFileName: (action as UpdateFile).payload?.fileName,
       };
@@ -53,6 +53,7 @@ function playerReducer(state: PlayerState, action: ActionUnion): PlayerState {
     case 'update_subtitle_file':
       return {
         ...state,
+        isPlaying: false,
         subtitleFile: (action as UpdateFile).payload?.file,
       };
 

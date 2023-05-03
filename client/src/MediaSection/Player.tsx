@@ -29,6 +29,14 @@ function Player({ src, borderColor }: PlayerProps) {
     handlePlay();
   }, [playerState]);
 
+  useEffect(() => {
+    if (!playerRef.current) {
+      return;
+    }
+
+    playerRef.current.load();
+  }, [src]);
+
   const shouldEmitEvent = useCallback(() => {
     if (!playerState?.lastEventTime) {
       return true;
