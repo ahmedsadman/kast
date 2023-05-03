@@ -10,12 +10,13 @@ function Player({ src, borderColor }: PlayerProps) {
 
   useEffect(() => {
     async function handlePlay() {
-      if (!playerRef.current) {
+      if (!playerRef.current || !playerState) {
         return;
       }
 
       try {
-        if (playerState?.isPlaying) {
+        if (playerState.isPlaying) {
+          playerRef.current.currentTime = playerState.currentTime || 0;
           await playerRef.current.play();
         } else {
           playerRef.current.pause();
@@ -26,15 +27,7 @@ function Player({ src, borderColor }: PlayerProps) {
     }
 
     handlePlay();
-  }, [playerState?.isPlaying]);
-
-  useEffect(() => {
-    if (!playerRef.current) {
-      return;
-    }
-
-    playerRef.current.currentTime = playerState?.currentTime || 0;
-  }, [playerState?.currentTime]);
+  }, [playerState]);
 
   const shouldEmitEvent = useCallback(() => {
     if (!playerState?.lastEventTime) {
