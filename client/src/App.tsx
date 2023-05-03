@@ -105,7 +105,7 @@ function App() {
       <InviteModal isOpen={showInviteModal} roomId={roomId} onClose={() => setShowInviteModal(false)} />
       <Grid flex={1} templateColumns="repeat(12, 1fr)" gap={0}>
         <GridItem colSpan={10} bg="#2C3333">
-          <MediaSection borderColor={borderColor} />
+          <MediaSection openInviteModal={() => setShowInviteModal(true)} borderColor={borderColor} />
         </GridItem>
         <GridItem colSpan={2} bg="black">
           <Flex direction="column" flex={1} h="100%">

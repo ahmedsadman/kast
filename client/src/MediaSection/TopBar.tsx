@@ -1,7 +1,7 @@
 import { Flex, Menu, MenuButton, MenuItem, Button, MenuList, IconButton, Tooltip } from '@chakra-ui/react';
 import { ChevronDownIcon, LinkIcon } from '@chakra-ui/icons';
 
-function TopBar({ menuItems, fileName }: TopBarProps) {
+function TopBar({ menuItems, fileName, openInviteModal }: TopBarProps) {
   return (
     <Flex alignSelf="stretch" justifyContent="space-between" alignItems="center" m={1}>
       <div>{fileName}</div>
@@ -15,6 +15,7 @@ function TopBar({ menuItems, fileName }: TopBarProps) {
             variant="outline"
             icon={<LinkIcon />}
             _hover={{ color: 'black', bg: 'white' }}
+            onClick={openInviteModal}
           />
         </Tooltip>
 
@@ -43,6 +44,7 @@ type Menu = {
 type TopBarProps = {
   menuItems: Menu[];
   fileName: string | undefined;
+  openInviteModal: () => void;
 };
 
 export default TopBar;

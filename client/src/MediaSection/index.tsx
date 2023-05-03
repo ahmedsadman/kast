@@ -6,7 +6,7 @@ import TopBar from './TopBar';
 
 import styles from './MediaSection.module.css';
 
-function MediaSection({ borderColor }: MediaSectionProps) {
+function MediaSection({ borderColor, openInviteModal }: MediaSectionProps) {
   const playerState = usePlayer();
   const playerDispatch = usePlayerDispatch();
   const subtitleInputRef = useRef<HTMLInputElement>(null);
@@ -45,7 +45,7 @@ function MediaSection({ borderColor }: MediaSectionProps) {
         <SelectionPlaceholder />
       ) : (
         <div className={styles.mainContainer}>
-          <TopBar fileName={playerState.videoFileName} menuItems={menuItems} />
+          <TopBar openInviteModal={openInviteModal} fileName={playerState.videoFileName} menuItems={menuItems} />
           <Player src={playerState.videoFileUrl} borderColor={borderColor} />
         </div>
       )}
@@ -62,6 +62,7 @@ function MediaSection({ borderColor }: MediaSectionProps) {
 
 type MediaSectionProps = {
   borderColor: string;
+  openInviteModal: () => void;
 };
 
 export default MediaSection;
