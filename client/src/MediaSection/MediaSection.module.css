@@ -14,10 +14,6 @@
     justify-content: center;
 }
 
-.selection_ph_file_input {
-    display: none;
-}
-
 .main_container {
     display: flex;
     flex-direction: column;
