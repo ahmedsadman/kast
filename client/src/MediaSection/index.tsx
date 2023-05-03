@@ -2,7 +2,7 @@ import React, { useRef, useCallback, useMemo } from 'react';
 import { usePlayer, usePlayerDispatch } from '../contexts/PlayerContext';
 import SelectionPlaceholder from './SelectionPlaceholder';
 import Player from './Player';
-import ActionsMenu from './ActionsMenu';
+import TopBar from './TopBar';
 
 import styles from './MediaSection.module.css';
 
@@ -40,13 +40,13 @@ function MediaSection({ borderColor }: MediaSectionProps) {
 
   return (
     <div className={styles.container}>
-      {!playerState?.videoFile ? (
+      {!playerState?.videoFileUrl ? (
         // TODO: Remove this child component and elevate everything
         <SelectionPlaceholder />
       ) : (
         <div className={styles.mainContainer}>
-          <ActionsMenu fileName={playerState.videoFileName} menuItems={menuItems} />
-          <Player src={playerState.videoFile} borderColor={borderColor} />
+          <TopBar fileName={playerState.videoFileName} menuItems={menuItems} />
+          <Player src={playerState.videoFileUrl} borderColor={borderColor} />
         </div>
       )}
       <input

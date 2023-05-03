@@ -1,7 +1,7 @@
 import { Flex, Menu, MenuButton, MenuItem, Button, MenuList, IconButton, Tooltip } from '@chakra-ui/react';
 import { ChevronDownIcon, LinkIcon } from '@chakra-ui/icons';
 
-function ActionsMenu({ menuItems, fileName }: ActionsMenuProps) {
+function TopBar({ menuItems, fileName }: TopBarProps) {
   return (
     <Flex alignSelf="stretch" justifyContent="space-between" alignItems="center" m={1}>
       <div>{fileName}</div>
@@ -40,9 +40,9 @@ type Menu = {
   action: () => void;
 };
 
-type ActionsMenuProps = {
+type TopBarProps = {
   menuItems: Menu[];
   fileName: string | undefined;
 };
 
-export default ActionsMenu;
+export default TopBar;
