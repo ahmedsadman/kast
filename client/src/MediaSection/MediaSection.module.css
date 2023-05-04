@@ -3,23 +3,18 @@
     padding: 1%;
     flex: 1;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .selection_ph_container {
     border: 1px dashed white;
     display: flex;
-    height: inherit;
-    flex: 1;
+    height: 90%;
+    align-self: stretch;
     align-items: center;
     justify-content: center;
-}
-
-.main_container {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
 }
 
 .player_video {

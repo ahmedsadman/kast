@@ -48,19 +48,15 @@ function MediaSection({ borderColor, openInviteModal }: MediaSectionProps) {
 
   return (
     <div className={styles.container}>
+      <TopBar openInviteModal={openInviteModal} fileName={playerState?.videoFileName} menuItems={menuItems} />
       {!playerState?.videoFileUrl ? (
         <div className={styles.selectionPhContainer}>
-          <div>
-            <Button colorScheme="blue" onClick={() => videoInputRef.current?.click()}>
-              Select Video
-            </Button>
-          </div>
+          <Button colorScheme="blue" onClick={() => videoInputRef.current?.click()}>
+            Select Video
+          </Button>
         </div>
       ) : (
-        <div className={styles.mainContainer}>
-          <TopBar openInviteModal={openInviteModal} fileName={playerState.videoFileName} menuItems={menuItems} />
-          <Player src={playerState.videoFileUrl} borderColor={borderColor} />
-        </div>
+        <Player src={playerState.videoFileUrl} borderColor={borderColor} />
       )}
       <input
         ref={subtitleInputRef}

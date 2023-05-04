@@ -3,13 +3,12 @@ import { ChevronDownIcon, LinkIcon } from '@chakra-ui/icons';
 
 function TopBar({ menuItems, fileName, openInviteModal }: TopBarProps) {
   return (
-    <Flex alignSelf="stretch" justifyContent="space-between" alignItems="center" m={1}>
+    <Flex alignSelf="stretch" justifyContent="space-between" alignItems="center" mb={1}>
       <div>{fileName}</div>
       <div>
         <Tooltip label="Copy Invite Link">
           <IconButton
             aria-label="Invite Link"
-            mr={2}
             mt={1}
             mb={1}
             variant="outline"
@@ -19,18 +18,20 @@ function TopBar({ menuItems, fileName, openInviteModal }: TopBarProps) {
           />
         </Tooltip>
 
-        <Menu colorScheme="blue">
-          <MenuButton as={Button} colorScheme="blue" rightIcon={<ChevronDownIcon />}>
-            Actions
-          </MenuButton>
-          <MenuList>
-            {menuItems.map((menu) => (
-              <MenuItem textColor="black" key={menu.label} onClick={menu.action}>
-                {menu.label}
-              </MenuItem>
-            ))}
-          </MenuList>
-        </Menu>
+        {fileName && (
+          <Menu colorScheme="blue">
+            <MenuButton as={Button} mr={0.5} ml={2} colorScheme="blue" rightIcon={<ChevronDownIcon />}>
+              Actions
+            </MenuButton>
+            <MenuList>
+              {menuItems.map((menu) => (
+                <MenuItem textColor="black" key={menu.label} onClick={menu.action}>
+                  {menu.label}
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
+        )}
       </div>
     </Flex>
   );
