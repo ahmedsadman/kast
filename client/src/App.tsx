@@ -42,6 +42,10 @@ function App() {
 
     const user = await pollUserDetails(socket.id);
     setRoomId(user.roomId);
+
+    const newUrl = `${window.location.origin}/${user.roomId}`;
+    window.history.replaceState(null, '', newUrl);
+
     setIsLoading(false);
     setShowJoinModal(false);
 
