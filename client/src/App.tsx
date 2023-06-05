@@ -7,13 +7,13 @@ import InviteModal from './InviteModal';
 import { socket } from './socket';
 import { pollUserDetails } from './services';
 import { usePlayerDispatch } from './contexts/PlayerContext';
+import { useAppDispatch } from './contexts/AppContext';
 import { MessageType } from './types';
 
 import styles from './App.module.css';
 
 function App() {
   // TODO: Implement contexts
-  const [roomId, setRoomId] = useState<string | null>(null);
   const [isSocketConnected, setIsSocketConnected] = useState(socket.connected);
   const [isLoading, setIsLoading] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(true);
@@ -22,6 +22,7 @@ function App() {
   const [borderColor, setBorderColor] = useState('transparent');
 
   const playerDispatch = usePlayerDispatch();
+  const appDispatch = useAppDispatch();
 
   const toggleBorderEffect = useCallback(() => {
     setBorderColor((prevColor) => (prevColor === 'red' ? 'transparent' : 'red'));
@@ -41,7 +42,7 @@ function App() {
     });
 
     const user = await pollUserDetails(socket.id);
-    setRoomId(user.roomId);
+    appDispatch?.({ type: 'update_room_id', payload: { roomId: user.roomId } });
 
     const newUrl = `${window.location.origin}/${user.roomId}`;
     window.history.replaceState(null, '', newUrl);
@@ -106,7 +107,7 @@ function App() {
         onClose={() => setShowJoinModal(false)}
         onSubmit={handleJoinModalSubmit}
       />
-      <InviteModal isOpen={showInviteModal} roomId={roomId} onClose={() => setShowInviteModal(false)} />
+      <InviteModal isOpen={showInviteModal} onClose={() => setShowInviteModal(false)} />
       <Grid flex={1} templateColumns="repeat(12, 1fr)" gap={0}>
         <GridItem colSpan={10} bg="#2C3333">
           <MediaSection openInviteModal={() => setShowInviteModal(true)} borderColor={borderColor} />

@@ -13,17 +13,19 @@ import {
   useClipboard,
 } from '@chakra-ui/react';
 import { CopyIcon, CheckIcon } from '@chakra-ui/icons';
+import { useApp } from './contexts/AppContext';
 
-function InviteModal({ isOpen, onClose, roomId, closeOnOverlayClick = false }: ModalProps) {
+function InviteModal({ isOpen, onClose, closeOnOverlayClick = false }: ModalProps) {
   const { onCopy, setValue: setClipboardValue, hasCopied } = useClipboard('');
+  const appState = useApp();
 
   const getInviteLink = useCallback(() => {
-    return roomId ? `${window.location.origin}/${roomId}` : '';
-  }, [roomId]);
+    return appState?.roomId ? `${window.location.origin}/${appState.roomId}` : '';
+  }, [appState]);
 
   useEffect(() => {
     setClipboardValue(getInviteLink());
-  }, [roomId, setClipboardValue, getInviteLink]);
+  }, [setClipboardValue, getInviteLink]);
 
   return (
     <Modal isOpen={isOpen} isCentered size="lg" onClose={onClose} closeOnOverlayClick={closeOnOverlayClick}>
@@ -54,7 +56,6 @@ function InviteModal({ isOpen, onClose, roomId, closeOnOverlayClick = false }: M
 type ModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  roomId: string | null;
   closeOnOverlayClick?: boolean;
 };
 
