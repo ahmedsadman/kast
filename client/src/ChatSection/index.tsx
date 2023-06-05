@@ -1,13 +1,16 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { Input, HStack, IconButton, Box, Flex } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
 import { debounce } from 'lodash';
 import Message from './Message';
-import { MessageType } from '../types';
+import { useApp } from '../contexts/AppContext';
 
 import { socket } from '../socket';
 
-function ChatSection({ messages, toggleBorderEffect }: ChatSectionProps) {
+function ChatSection({ toggleBorderEffect }: ChatSectionProps) {
+  const appState = useApp();
+  const messages = useMemo(() => appState?.messages || [], [appState?.messages]);
+
   const [messageText, setMessageText] = useState('');
   const messageEnd = useRef<HTMLDivElement>(null);
 
@@ -71,7 +74,6 @@ function ChatSection({ messages, toggleBorderEffect }: ChatSectionProps) {
 }
 
 type ChatSectionProps = {
-  messages: MessageType[];
   toggleBorderEffect: () => void;
 };
 

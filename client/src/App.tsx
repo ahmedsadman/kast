@@ -13,11 +13,9 @@ import { MessageType } from './types';
 import styles from './App.module.css';
 
 function App() {
-  // TODO: Implement contexts
   const [isLoading, setIsLoading] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(true);
   const [showInviteModal, setShowInviteModal] = useState(false);
-  const [messages, setMessages] = useState<MessageType[]>([]);
   const [borderColor, setBorderColor] = useState('transparent');
 
   const playerDispatch = usePlayerDispatch();
@@ -78,8 +76,7 @@ function App() {
     }
 
     function onNewMessage(data: MessageType) {
-      setMessages((prevMessages) => [...prevMessages, data]);
-      // console.log('new message', data);
+      appDispatch?.({ type: 'new_message', payload: { message: data } });
     }
 
     socket.on('connect', onConnect);
@@ -113,7 +110,7 @@ function App() {
         <GridItem colSpan={2} bg="black">
           <Flex direction="column" flex={1} h="100%">
             <div style={{ padding: '5px 2%', alignSelf: 'center' }}>kast</div>
-            <ChatSection messages={messages} toggleBorderEffect={toggleBorderEffect} />
+            <ChatSection toggleBorderEffect={toggleBorderEffect} />
           </Flex>
         </GridItem>
       </Grid>
