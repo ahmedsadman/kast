@@ -1,16 +1,44 @@
-import React, { useRef, useCallback, useMemo } from 'react';
+import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
+import { debounce } from 'lodash';
 import { Button } from '@chakra-ui/react';
 import { usePlayer, usePlayerDispatch } from '../contexts/PlayerContext';
 import Player from './Player';
 import TopBar from './TopBar';
+import { useApp } from '../contexts/AppContext';
+import { socket } from '../socket';
 
 import styles from './MediaSection.module.css';
 
-function MediaSection({ borderColor, openInviteModal }: MediaSectionProps) {
+function MediaSection({ openInviteModal }: MediaSectionProps) {
   const playerState = usePlayer();
+  const appState = useApp();
   const playerDispatch = usePlayerDispatch();
+
   const videoInputRef = useRef<HTMLInputElement>(null);
   const subtitleInputRef = useRef<HTMLInputElement>(null);
+  const [borderColor, setBorderColor] = useState('transparent');
+
+  const toggleBorderEffect = useCallback(() => {
+    setBorderColor((prevColor) => (prevColor === 'red' ? 'transparent' : 'red'));
+    setTimeout(() => {
+      setBorderColor('transparent');
+    }, 2700);
+  }, []);
+
+  const notifyNewMessage = useCallback(debounce(toggleBorderEffect, 3000), [toggleBorderEffect]);
+
+  useEffect(() => {
+    if (!appState?.messages) {
+      return;
+    }
+
+    const { messages } = appState;
+    const lastMessage = messages[messages.length - 1];
+
+    if (lastMessage?.user.id !== socket.id && !lastMessage?.systemMessage) {
+      notifyNewMessage();
+    }
+  }, [appState, notifyNewMessage]);
 
   const onChangeSubtitle = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,7 +99,6 @@ function MediaSection({ borderColor, openInviteModal }: MediaSectionProps) {
 }
 
 type MediaSectionProps = {
-  borderColor: string;
   openInviteModal: () => void;
 };
 

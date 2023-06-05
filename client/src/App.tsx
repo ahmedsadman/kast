@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Grid, GridItem, Flex } from '@chakra-ui/react';
 import MediaSection from './MediaSection';
 import ChatSection from './ChatSection';
@@ -16,18 +16,9 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(true);
   const [showInviteModal, setShowInviteModal] = useState(false);
-  const [borderColor, setBorderColor] = useState('transparent');
 
   const playerDispatch = usePlayerDispatch();
   const appDispatch = useAppDispatch();
-
-  const toggleBorderEffect = useCallback(() => {
-    setBorderColor((prevColor) => (prevColor === 'red' ? 'transparent' : 'red'));
-    setTimeout(() => {
-      console.log('resetting');
-      setBorderColor('transparent');
-    }, 2700);
-  }, []);
 
   const handleJoinModalSubmit = async (name: string) => {
     setIsLoading(true);
@@ -105,12 +96,12 @@ function App() {
       <InviteModal isOpen={showInviteModal} onClose={() => setShowInviteModal(false)} />
       <Grid flex={1} templateColumns="repeat(12, 1fr)" gap={0}>
         <GridItem colSpan={10} bg="#2C3333">
-          <MediaSection openInviteModal={() => setShowInviteModal(true)} borderColor={borderColor} />
+          <MediaSection openInviteModal={() => setShowInviteModal(true)} />
         </GridItem>
         <GridItem colSpan={2} bg="black">
           <Flex direction="column" flex={1} h="100%">
             <div style={{ padding: '5px 2%', alignSelf: 'center' }}>kast</div>
-            <ChatSection toggleBorderEffect={toggleBorderEffect} />
+            <ChatSection />
           </Flex>
         </GridItem>
       </Grid>

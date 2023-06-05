@@ -1,13 +1,12 @@
-import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
 import { Input, HStack, IconButton, Box, Flex } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
-import { debounce } from 'lodash';
 import Message from './Message';
 import { useApp } from '../contexts/AppContext';
 
 import { socket } from '../socket';
 
-function ChatSection({ toggleBorderEffect }: ChatSectionProps) {
+function ChatSection() {
   const appState = useApp();
   const messages = useMemo(() => appState?.messages || [], [appState?.messages]);
 
@@ -33,18 +32,6 @@ function ChatSection({ toggleBorderEffect }: ChatSectionProps) {
     },
     [handleMessageSend],
   );
-
-  const notifyNewMessage = useCallback(debounce(toggleBorderEffect, 3000), [toggleBorderEffect]);
-
-  useEffect(() => {
-    messageEnd.current?.scrollIntoView({ behavior: 'smooth' });
-
-    const lastMessage = messages[messages.length - 1];
-
-    if (lastMessage?.user.id !== socket.id && !lastMessage?.systemMessage) {
-      notifyNewMessage();
-    }
-  }, [messages, notifyNewMessage]);
 
   return (
     <Flex direction="column" flex={1} justifyContent="space-between">
@@ -72,9 +59,5 @@ function ChatSection({ toggleBorderEffect }: ChatSectionProps) {
     </Flex>
   );
 }
-
-type ChatSectionProps = {
-  toggleBorderEffect: () => void;
-};
 
 export default ChatSection;
