@@ -1,4 +1,5 @@
 import React, { createContext, useReducer, useContext } from 'react';
+import { Action, Dispatch } from '../types';
 
 export const PlayerContext = createContext<PlayerState | null>(null);
 export const PlayerContextDispatch = createContext<Dispatch | null>(null);
@@ -80,14 +81,7 @@ type PlayerState = {
   lastEventTime: number;
 };
 
-type Action<T = object> = {
-  type: string;
-  payload?: T;
-};
-
 type UpdateTime = Action<{ time: number }>;
 type UpdateFile = Action<{ file: string | undefined; fileName: string | undefined }>;
 
 type ActionUnion = Action | UpdateTime | UpdateFile;
-
-type Dispatch = (_action: Action) => void;

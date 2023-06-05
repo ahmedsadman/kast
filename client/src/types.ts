@@ -10,3 +10,10 @@ export type MessageType = {
   user: User;
   systemMessage: boolean;
 };
+
+export type Action<T = object> = {
+  type: string;
+  payload?: T;
+};
+
+export type Dispatch = (_action: Action) => void;
