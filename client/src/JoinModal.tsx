@@ -13,19 +13,22 @@ import {
   Spinner,
 } from '@chakra-ui/react';
 import { AtSignIcon } from '@chakra-ui/icons';
+import { useApp } from './contexts/AppContext';
 
-function JoinModal({ isOpen, loading, onClose, isSocketConnected, closeOnOverlayClick = false, onSubmit }: ModalProps) {
+function JoinModal({ isOpen, loading, onClose, closeOnOverlayClick = false, onSubmit }: ModalProps) {
   const [name, setName] = useState('');
+  const appState = useApp();
+  const isConnected = appState?.isConnected;
 
   return (
     <Modal isOpen={isOpen} isCentered size="lg" onClose={onClose} closeOnOverlayClick={closeOnOverlayClick}>
       <ModalOverlay />
       <ModalContent
         minHeight="80px"
-        alignItems={isSocketConnected ? undefined : 'center'}
-        justifyContent={isSocketConnected ? undefined : 'center'}
+        alignItems={isConnected ? undefined : 'center'}
+        justifyContent={isConnected ? undefined : 'center'}
       >
-        {isSocketConnected ? (
+        {isConnected ? (
           <>
             <ModalHeader>Enter Display Name</ModalHeader>
             <ModalBody>
@@ -57,7 +60,6 @@ type ModalProps = {
   onClose: () => void;
   onSubmit: (_name: string) => void;
   closeOnOverlayClick?: boolean;
-  isSocketConnected: boolean;
 };
 
 export default JoinModal;

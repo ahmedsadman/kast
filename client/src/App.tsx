@@ -14,7 +14,6 @@ import styles from './App.module.css';
 
 function App() {
   // TODO: Implement contexts
-  const [isSocketConnected, setIsSocketConnected] = useState(socket.connected);
   const [isLoading, setIsLoading] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(true);
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -60,11 +59,11 @@ function App() {
       if (socket.recovered) {
         console.log('connection recovered');
       }
-      setIsSocketConnected(true);
+      appDispatch?.({ type: 'connected' });
     }
 
     function onDisconnect() {
-      setIsSocketConnected(false);
+      appDispatch?.({ type: 'disconnected' });
     }
 
     function onVideoPlayed(data: { id: string; time: number }) {
@@ -96,13 +95,12 @@ function App() {
       socket.off('videoPaused', onVideoPaused);
       socket.off('newMessage', onNewMessage);
     };
-  }, [playerDispatch]);
+  }, [playerDispatch, appDispatch]);
 
   return (
     <div className={styles.mainContainer}>
       <JoinModal
         loading={isLoading}
-        isSocketConnected={isSocketConnected}
         isOpen={showJoinModal}
         onClose={() => setShowJoinModal(false)}
         onSubmit={handleJoinModalSubmit}
