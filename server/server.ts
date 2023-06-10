@@ -33,6 +33,12 @@ app.get('/user/:userId', async (req, res) => {
   res.send({ user });
 });
 
+app.get('/room/:roomId', async (req, res) => {
+  const { roomId } = req.params;
+  const room = rooms.getRoom(roomId);
+  res.send({ room, found: !!room });
+});
+
 const eventsHandler = new EventsHandler(io);
 eventsHandler.registerEvents();
 

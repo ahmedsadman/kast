@@ -18,7 +18,7 @@ class Rooms {
   }
 
   getRoom(roomId: string) {
-    return this.#roomsMap[roomId];
+    return this.#roomsMap?.[roomId];
   }
 
   addUser(roomId: string, name: string, userId: string) {

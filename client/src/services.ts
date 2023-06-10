@@ -21,3 +21,7 @@ export const pollUserDetails = (userId: string): Promise<User> => {
     }, 1000);
   });
 };
+
+export const getRoom = (roomId: string) => {
+  return axios.get(`${BASE_URL}/room/${roomId}`).then((res) => res.data);
+};

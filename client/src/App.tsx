@@ -5,7 +5,7 @@ import ChatSection from './ChatSection';
 import JoinModal from './JoinModal';
 import InviteModal from './InviteModal';
 import { socket } from './socket';
-import { pollUserDetails } from './services';
+import { pollUserDetails, getRoom } from './services';
 import { usePlayerDispatch } from './contexts/PlayerContext';
 import { useAppDispatch } from './contexts/AppContext';
 import { MessageType } from './types';
@@ -16,13 +16,26 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(true);
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [joinError, setJoinError] = useState<string | undefined>(undefined);
 
   const playerDispatch = usePlayerDispatch();
   const appDispatch = useAppDispatch();
 
   const handleJoinModalSubmit = async (name: string) => {
     setIsLoading(true);
+    setJoinError(undefined);
+
     const roomId = window.location?.pathname?.split('/')?.[1];
+
+    if (roomId) {
+      const roomDetails = await getRoom(roomId);
+
+      if (!roomDetails.found) {
+        setJoinError('Room not found');
+        setIsLoading(false);
+        return;
+      }
+    }
 
     socket.emit('join', {
       roomId,
@@ -92,6 +105,7 @@ function App() {
         isOpen={showJoinModal}
         onClose={() => setShowJoinModal(false)}
         onSubmit={handleJoinModalSubmit}
+        joinError={joinError}
       />
       <InviteModal isOpen={showInviteModal} onClose={() => setShowInviteModal(false)} />
       <Grid flex={1} templateColumns="repeat(12, 1fr)" gap={0}>
