@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Input, HStack, IconButton, Box, Flex } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
 import Message from './Message';
@@ -12,6 +12,10 @@ function ChatSection() {
 
   const [messageText, setMessageText] = useState('');
   const messageEnd = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messageEnd.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages.length]);
 
   const handleMessageSend = useCallback(() => {
     socket.emit('newMessage', {
