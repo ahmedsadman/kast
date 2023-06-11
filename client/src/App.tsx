@@ -17,6 +17,7 @@ function App() {
   const [showJoinModal, setShowJoinModal] = useState(true);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [joinError, setJoinError] = useState<string | undefined>(undefined);
+  const [socketError, setSocketError] = useState<string | undefined>(undefined);
 
   const playerDispatch = usePlayerDispatch();
   const appDispatch = useAppDispatch();
@@ -57,6 +58,10 @@ function App() {
   };
 
   useEffect(() => {
+    function onConnectFailed() {
+      setSocketError('Could not reach server at the moment. It is possible that server is not live to minimize costs');
+    }
+
     function onConnect() {
       if (socket.recovered) {
         console.log('connection recovered');
@@ -84,6 +89,7 @@ function App() {
     }
 
     socket.on('connect', onConnect);
+    socket.on('connect_error', onConnectFailed);
     socket.on('disconnect', onDisconnect);
     socket.on('videoPlayed', onVideoPlayed);
     socket.on('videoPaused', onVideoPaused);
@@ -91,6 +97,7 @@ function App() {
 
     return () => {
       socket.off('connect', onConnect);
+      socket.off('connect_error', onConnectFailed);
       socket.off('disconnect', onDisconnect);
       socket.off('videoPlayed', onVideoPlayed);
       socket.off('videoPaused', onVideoPaused);
@@ -106,6 +113,7 @@ function App() {
         onClose={() => setShowJoinModal(false)}
         onSubmit={handleJoinModalSubmit}
         joinError={joinError}
+        socketError={socketError}
       />
       <InviteModal isOpen={showInviteModal} onClose={() => setShowInviteModal(false)} />
       <Grid flex={1} minHeight="100vh" templateColumns="repeat(12, 2fr)" gap={0}>
