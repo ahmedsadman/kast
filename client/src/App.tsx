@@ -108,13 +108,13 @@ function App() {
         joinError={joinError}
       />
       <InviteModal isOpen={showInviteModal} onClose={() => setShowInviteModal(false)} />
-      <Grid flex={1} templateColumns="repeat(12, 1fr)" gap={0}>
-        <GridItem colSpan={10} bg="#2C3333">
+      <Grid flex={1} minHeight="100vh" templateColumns="repeat(12, 2fr)" gap={0}>
+        <GridItem display="flex" colSpan={10} bg="#2C3333">
           <MediaSection openInviteModal={() => setShowInviteModal(true)} />
         </GridItem>
-        <GridItem colSpan={2} bg="black">
-          <Flex direction="column" flex={1} h="100%">
-            <div style={{ padding: '5px 2%', alignSelf: 'center' }}>kast</div>
+        <GridItem display="flex" colSpan={2} bg="black">
+          <Flex direction="column" flex={1}>
+            <div style={{ alignSelf: 'center' }}>kast</div>
             <ChatSection />
           </Flex>
         </GridItem>

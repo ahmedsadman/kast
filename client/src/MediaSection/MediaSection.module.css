@@ -1,5 +1,4 @@
 .container {
-    height: 100%;
     padding: 1%;
     flex: 1;
     display: flex;
@@ -11,7 +10,7 @@
 .selection_ph_container {
     border: 1px dashed white;
     display: flex;
-    height: 90%;
+    flex: 1;
     align-self: stretch;
     align-items: center;
     justify-content: center;
@@ -20,4 +19,5 @@
 .player_video {
     width: 100%;
     height: auto;
+    max-height: 87vh;
 }
