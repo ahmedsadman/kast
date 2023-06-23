@@ -2,6 +2,7 @@ import { Server, Socket } from 'socket.io';
 import { randomUUID } from 'crypto';
 import roomsManager from './entity/RoomsManager';
 import type { User } from './entity/User';
+import type Room from './entity/Room';
 
 class EventsHandler {
   #io: Server | null = null;
@@ -12,15 +13,29 @@ class EventsHandler {
 
   registerEvents() {
     this.#io?.on('connection', (socket: Socket) => {
-      if (socket.recovered) {
-        console.log('recovered connection', socket.id);
-      }
       console.log('user connected', socket.id);
+
       this.#registerUserJoin(socket);
       this.#registerUserDisconnect(socket);
       this.#registerPlayerEvents(socket);
       this.#registerChatEvents(socket);
+
+      if (socket.recovered) {
+        const room = roomsManager.getRoomByUser(socket.id);
+        const user = room.findUserById(socket.id);
+        this.#announceUserJoin(room, user);
+      }
     });
+  }
+
+  #announceUserJoin(room: Room, user: User) {
+    this.#io?.to(room.id).emit('roomUserJoin', {
+      id: user.id,
+      roomId: room.id,
+      name: user.name,
+    });
+
+    this.#io?.to(room.id).emit('newMessage', this.#generateChatMessage(user, `${user.name} joined the room`, true));
   }
 
   #registerUserJoin(socket: Socket) {
@@ -32,14 +47,7 @@ class EventsHandler {
       socket.join(room.id);
 
       const newUser = room.connectUser(socket.id, name);
-
-      this.#io?.to(room.id).emit('roomUserJoin', {
-        id: socket.id,
-        roomId,
-        name,
-      });
-
-      this.#io?.to(room.id).emit('newMessage', this.#generateChatMessage(newUser, `${name} joined the room`, true));
+      this.#announceUserJoin(room, newUser);
     });
   }
 
