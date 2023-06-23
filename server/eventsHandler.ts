@@ -40,29 +40,37 @@ class EventsHandler {
 
   #registerUserJoin(socket: Socket) {
     socket.on('join', (data) => {
-      console.log('joining user', data);
-      const { roomId, name } = data;
-      const room = roomId ? roomsManager.getRoom(roomId) : roomsManager.createRoom();
+      try {
+        console.log('joining user', data);
+        const { roomId, name } = data;
+        const room = roomId ? roomsManager.getRoom(roomId) : roomsManager.createRoom();
 
-      socket.join(room.id);
+        socket.join(room.id);
 
-      const newUser = room.connectUser(socket.id, name);
-      this.#announceUserJoin(room, newUser);
+        const newUser = room.connectUser(socket.id, name);
+        this.#announceUserJoin(room, newUser);
+      } catch (err) {
+        console.log(`Failed to join user: ${err}`);
+      }
     });
   }
 
   #registerUserDisconnect(socket: Socket) {
     socket.on('disconnect', () => {
-      console.log('user disconnected', socket.id);
-      const room = roomsManager.getRoomByUser(socket.id);
-      const user = room.findUserById(socket.id);
+      try {
+        console.log('user disconnected', socket.id);
+        const room = roomsManager.getRoomByUser(socket.id);
+        const user = room.findUserById(socket.id);
 
-      if (!room) {
-        return;
+        if (!room) {
+          return;
+        }
+
+        this.#io?.to(room.id).emit('newMessage', this.#generateChatMessage(user, `${user.name} left the room`, true));
+        room.disconnectUser(socket.id);
+      } catch (err) {
+        console.log(`Failed to disconnect user: ${err}`);
       }
-
-      this.#io?.to(room.id).emit('newMessage', this.#generateChatMessage(user, `${user.name} left the room`, true));
-      room.disconnectUser(socket.id);
     });
   }
 
