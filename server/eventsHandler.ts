@@ -1,6 +1,7 @@
 import { Server, Socket } from 'socket.io';
 import { randomUUID } from 'crypto';
-import rooms, { User } from './rooms';
+import roomsManager from './entity/RoomsManager';
+import type { User } from './entity/User';
 
 class EventsHandler {
   #io: Server | null = null;
@@ -13,7 +14,6 @@ class EventsHandler {
     this.#io?.on('connection', (socket: Socket) => {
       if (socket.recovered) {
         console.log('recovered connection', socket.id);
-        return this.#handleRecoveredConnection(socket);
       }
       console.log('user connected', socket.id);
       this.#registerUserJoin(socket);
@@ -23,66 +23,64 @@ class EventsHandler {
     });
   }
 
-  #handleRecoveredConnection(socket: Socket) {
-    const user = rooms.getUser(socket.id);
-    console.log('found recovered user', user);
-  }
-
   #registerUserJoin(socket: Socket) {
     socket.on('join', (data) => {
       console.log('joining user', data);
       const { roomId, name } = data;
-      const finalRoomId = roomId || rooms.createRoom();
+      const room = roomId ? roomsManager.getRoom(roomId) : roomsManager.createRoom();
 
-      socket.join(finalRoomId);
+      socket.join(room.id);
 
-      const newUser = rooms.addUser(finalRoomId, name, socket.id);
+      const newUser = room.connectUser(socket.id, name);
 
-      this.#io?.to(finalRoomId).emit('roomUserJoin', {
+      this.#io?.to(room.id).emit('roomUserJoin', {
         id: socket.id,
         roomId,
         name,
       });
 
-      this.#io?.to(finalRoomId).emit('newMessage', this.#generateChatMessage(newUser, `${name} joined the room`, true));
+      this.#io?.to(room.id).emit('newMessage', this.#generateChatMessage(newUser, `${name} joined the room`, true));
     });
   }
 
   #registerUserDisconnect(socket: Socket) {
     socket.on('disconnect', () => {
       console.log('user disconnected', socket.id);
-      const user = rooms.getUser(socket.id);
+      const room = roomsManager.getRoomByUser(socket.id);
+      const user = room.findUserById(socket.id);
 
-      if (!user) {
+      if (!room) {
         return;
       }
 
-      this.#io?.to(user.roomId).emit('newMessage', this.#generateChatMessage(user, `${user.name} left the room`, true));
-      rooms.removeUser(socket.id);
+      this.#io?.to(room.id).emit('newMessage', this.#generateChatMessage(user, `${user.name} left the room`, true));
+      room.disconnectUser(socket.id);
     });
   }
 
   #registerPlayerEvents(socket: Socket) {
     socket.on('videoPlayed', (data) => {
-      const user = rooms.getUser(socket.id);
+      const room = roomsManager.getRoomByUser(socket.id);
+      const user = room.findUserById(socket.id);
 
-      if (!user) {
+      if (!room) {
         return;
       }
 
-      socket.to(user.roomId).emit('videoPlayed', { id: socket.id, time: data.time });
-      this.#io?.to(user.roomId).emit('newMessage', this.#generateChatMessage(user, 'Video started playing', true));
+      socket.to(room.id).emit('videoPlayed', { id: socket.id, time: data.time });
+      this.#io?.to(room.id).emit('newMessage', this.#generateChatMessage(user, 'Video started playing', true));
     });
 
     socket.on('videoPaused', () => {
-      const user = rooms.getUser(socket.id);
+      const room = roomsManager.getRoomByUser(socket.id);
+      const user = room.findUserById(socket.id);
 
-      if (!user) {
+      if (!room) {
         return;
       }
 
-      socket.to(user.roomId).emit('videoPaused', { id: socket.id });
-      this.#io?.to(user.roomId).emit('newMessage', this.#generateChatMessage(user, 'Video paused', true));
+      socket.to(room.id).emit('videoPaused', { id: socket.id });
+      this.#io?.to(room.id).emit('newMessage', this.#generateChatMessage(user, 'Video paused', true));
     });
   }
 
@@ -97,14 +95,15 @@ class EventsHandler {
 
   #registerChatEvents(socket: Socket) {
     socket.on('newMessage', (data) => {
-      const user = rooms.getUser(socket.id);
+      const room = roomsManager.getRoomByUser(socket.id);
+      const user = room.findUserById(socket.id);
       const { content } = data;
 
       if (!user) {
         return;
       }
 
-      this.#io?.to(user.roomId).emit('newMessage', this.#generateChatMessage(user, content));
+      this.#io?.to(room.id).emit('newMessage', this.#generateChatMessage(user, content));
     });
   }
 }

@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import rooms from './rooms';
+import roomsManager from './entity/RoomsManager';
 
 import EventsHandler from './eventsHandler';
 
@@ -29,13 +29,15 @@ app.get('/status', (_req, res) => {
 
 app.get('/user/:userId', async (req, res) => {
   const { userId } = req.params;
-  const user = rooms.getUser(userId);
-  res.send({ user });
+  const room = roomsManager.getRoomByUser(userId);
+
+  const user = room.findUserById(userId);
+  res.send({ user: { ...user, roomId: room.id } });
 });
 
 app.get('/room/:roomId', async (req, res) => {
   const { roomId } = req.params;
-  const room = rooms.getRoom(roomId);
+  const room = roomsManager.getRoom(roomId);
   res.send({ room, found: !!room });
 });
 
