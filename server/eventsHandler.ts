@@ -66,6 +66,12 @@ class EventsHandler {
           return;
         }
 
+        this.#io?.to(room.id).emit('roomUserLeave', {
+          id: user.id,
+          roomId: room.id,
+          name: user.name,
+        });
+
         this.#io?.to(room.id).emit('newMessage', this.#generateChatMessage(user, `${user.name} left the room`, true));
         room.disconnectUser(socket.id);
       } catch (err) {
