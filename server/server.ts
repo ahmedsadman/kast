@@ -41,6 +41,13 @@ app.get('/room/:roomId', async (req, res) => {
   res.send({ room, found: !!room });
 });
 
+app.get('/room/:roomId/users', async (req, res) => {
+  const { roomId } = req.params;
+  const room = roomsManager.getRoom(roomId);
+  const users = room.getActiveUsers();
+  res.send({ users });
+});
+
 const eventsHandler = new EventsHandler(io);
 eventsHandler.registerEvents();
 

@@ -52,6 +52,11 @@ class Room {
     return Object.keys(this.users);
   }
 
+  getActiveUsers() {
+    const allUsers = Object.values(this.users);
+    return allUsers.filter((user) => Boolean(user.isActive));
+  }
+
   checkMarkForDelete() {
     let shouldMark = true;
 

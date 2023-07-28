@@ -1,6 +1,7 @@
+// TODO: Try refining this type. Client and server user types are mistmatching
 export type User = {
   id: string;
-  roomId: string;
+  roomId?: string;
   name: string;
 };
 

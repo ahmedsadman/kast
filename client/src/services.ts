@@ -25,3 +25,7 @@ export const pollUserDetails = (userId: string): Promise<User> => {
 export const getRoom = (roomId: string) => {
   return axios.get(`${BASE_URL}/room/${roomId}`).then((res) => res.data);
 };
+
+export const getRoomUsers = (roomId: string) => {
+  return axios.get(`${BASE_URL}/room/${roomId}/users`).then((res) => res.data);
+};

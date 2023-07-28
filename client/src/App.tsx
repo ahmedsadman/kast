@@ -5,7 +5,7 @@ import ChatSection from './ChatSection';
 import JoinModal from './JoinModal';
 import InviteModal from './InviteModal';
 import { socket } from './socket';
-import { pollUserDetails, getRoom } from './services';
+import { pollUserDetails, getRoom, getRoomUsers } from './services';
 import { usePlayerDispatch } from './contexts/PlayerContext';
 import { useAppDispatch } from './contexts/AppContext';
 import { MessageType, User } from './types';
@@ -22,6 +22,7 @@ function App() {
   const playerDispatch = usePlayerDispatch();
   const appDispatch = useAppDispatch();
 
+  // TODO: Refactor
   const handleJoinModalSubmit = async (name: string) => {
     setIsLoading(true);
     setJoinError(undefined);
@@ -44,8 +45,15 @@ function App() {
     });
 
     const user = await pollUserDetails(socket.id);
+
+    if (!user?.roomId) {
+      throw new Error("User object doesn't have room id");
+    }
+
+    const roomUsers = await getRoomUsers(user.roomId);
     appDispatch?.({ type: 'update_room_id', payload: { roomId: user.roomId } });
     appDispatch?.({ type: 'update_user_id', payload: { userId: user.id } });
+    appDispatch?.({ type: 'update_users_list', payload: { users: roomUsers.users } });
 
     const newUrl = `${window.location.origin}/${user.roomId}`;
     window.history.replaceState(null, '', newUrl);

@@ -62,6 +62,20 @@ function appReducer(state: AppState, action: ActionUnion): AppState {
       };
     }
 
+    case 'update_users_list': {
+      const users = (action as UserListUpdateAction).payload?.users;
+      console.log('new update list', users);
+
+      if (!users) {
+        return state;
+      }
+
+      return {
+        ...state,
+        users,
+      };
+    }
+
     case 'new_message': {
       const messages = [...state.messages];
       const incomingMessage = (action as NewMessageAction).payload?.message;
@@ -93,6 +107,7 @@ type UpdateRoomIdAction = Action<{ roomId: string }>;
 type UpdateUserIdAction = Action<{ userId: string }>;
 type NewMessageAction = Action<{ message: MessageType }>;
 type UserStatusAction = Action<{ user: User }>;
+type UserListUpdateAction = Action<{ users: User[] }>;
 type ActionUnion = Action | UpdateRoomIdAction | NewMessageAction;
 
 type AppState = {
