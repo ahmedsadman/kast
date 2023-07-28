@@ -45,6 +45,7 @@ function App() {
 
     const user = await pollUserDetails(socket.id);
     appDispatch?.({ type: 'update_room_id', payload: { roomId: user.roomId } });
+    appDispatch?.({ type: 'update_user_id', payload: { userId: user.id } });
 
     const newUrl = `${window.location.origin}/${user.roomId}`;
     window.history.replaceState(null, '', newUrl);
@@ -90,10 +91,12 @@ function App() {
 
     function onNewUserJoin(user: User) {
       console.log('user join', user);
+      appDispatch?.({ type: 'user_join', payload: { user } });
     }
 
     function onUserLeave(user: User) {
       console.log('user leave', user);
+      appDispatch?.({ type: 'user_leave', payload: { user } });
     }
 
     socket.on('connect', onConnect);

@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, useContext } from 'react';
-import { MessageType, Action, Dispatch } from '../types';
+import { MessageType, User, Action, Dispatch } from '../types';
 
 export const AppContext = createContext<AppState | null>(null);
 export const AppContextDispatch = createContext<Dispatch | null>(null);
@@ -33,6 +33,35 @@ function appReducer(state: AppState, action: ActionUnion): AppState {
     case 'update_room_id':
       return { ...state, roomId: (action as UpdateRoomIdAction).payload?.roomId };
 
+    case 'update_user_id':
+      return { ...state, userId: (action as UpdateUserIdAction).payload?.userId };
+
+    case 'user_join': {
+      const newUser = (action as UserStatusAction).payload?.user;
+
+      if (!newUser) {
+        return state;
+      }
+
+      return {
+        ...state,
+        users: [...state.users, newUser],
+      };
+    }
+
+    case 'user_leave': {
+      const user = (action as UserStatusAction).payload?.user;
+
+      if (!user) {
+        return state;
+      }
+
+      return {
+        ...state,
+        users: state.users.filter((_user) => _user.id !== user.id),
+      };
+    }
+
     case 'new_message': {
       const messages = [...state.messages];
       const incomingMessage = (action as NewMessageAction).payload?.message;
@@ -55,15 +84,21 @@ function appReducer(state: AppState, action: ActionUnion): AppState {
 const initialState: AppState = {
   isConnected: false,
   roomId: undefined,
+  userId: undefined,
   messages: [],
+  users: [],
 };
 
 type UpdateRoomIdAction = Action<{ roomId: string }>;
+type UpdateUserIdAction = Action<{ userId: string }>;
 type NewMessageAction = Action<{ message: MessageType }>;
+type UserStatusAction = Action<{ user: User }>;
 type ActionUnion = Action | UpdateRoomIdAction | NewMessageAction;
 
 type AppState = {
   isConnected: boolean;
   roomId: string | undefined;
+  userId: string | undefined;
   messages: MessageType[];
+  users: User[];
 };
