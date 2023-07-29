@@ -97,8 +97,8 @@ function App() {
       appDispatch?.({ type: 'new_message', payload: { message: data } });
     }
 
-    function onNewReaction(data: ReactionMessage) {
-      console.log('new reaction', data);
+    function onNewReaction(reaction: ReactionMessage) {
+      appDispatch?.({ type: 'new_reaction', payload: { reaction } });
     }
 
     function onNewUserJoin(user: User) {
