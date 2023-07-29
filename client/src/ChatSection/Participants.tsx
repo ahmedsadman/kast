@@ -1,5 +1,6 @@
 import { AvatarGroup, Avatar, Center, Tooltip } from '@chakra-ui/react';
 import { useApp } from '../contexts/AppContext';
+import { getNameInitials } from '../utils';
 
 function Participants() {
   const appState = useApp();
@@ -11,7 +12,7 @@ function Participants() {
       <Tooltip label={participantsString}>
         <AvatarGroup size="xs" max={5}>
           {appState?.users.map((user) => (
-            <Avatar key={user.id} cursor="pointer" name={user.name} />
+            <Avatar getInitials={getNameInitials} key={user.id} cursor="pointer" name={user.name} />
           ))}
         </AvatarGroup>
       </Tooltip>
