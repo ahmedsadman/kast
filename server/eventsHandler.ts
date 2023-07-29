@@ -19,6 +19,7 @@ class EventsHandler {
       this.#registerUserDisconnect(socket);
       this.#registerPlayerEvents(socket);
       this.#registerChatEvents(socket);
+      this.#registerReactionEvents(socket);
 
       if (socket.recovered) {
         const room = roomsManager.getRoomByUser(socket.id);
@@ -106,6 +107,7 @@ class EventsHandler {
     });
   }
 
+  // TODO: Does not belong here. Should move to a utility function
   #generateChatMessage(user: User, content: string, systemMessage = false) {
     return {
       id: randomUUID(),
@@ -115,8 +117,19 @@ class EventsHandler {
     };
   }
 
+  // TODO: Does not belong here. Should move to a utility function
+  #generateReactionMessage(user: User, emoji: string) {
+    const id = `${user.id}-${Date.now()}`;
+    return {
+      id,
+      emoji,
+      createdAt: Date.now(),
+    };
+  }
+
   #registerChatEvents(socket: Socket) {
     socket.on('newMessage', (data) => {
+      // TODO: Maybe extract as roomManager.getUser?
       const room = roomsManager.getRoomByUser(socket.id);
       const user = room.findUserById(socket.id);
       const { content } = data;
@@ -126,6 +139,16 @@ class EventsHandler {
       }
 
       this.#io?.to(room.id).emit('newMessage', this.#generateChatMessage(user, content));
+    });
+  }
+
+  #registerReactionEvents(socket: Socket) {
+    socket.on('newReaction', (data) => {
+      const room = roomsManager.getRoomByUser(socket.id);
+      const user = room.findUserById(socket.id);
+      const { emoji } = data;
+
+      this.#io?.to(room.id).emit('newReaction', this.#generateReactionMessage(user, emoji));
     });
   }
 }

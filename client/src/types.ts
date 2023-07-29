@@ -12,6 +12,12 @@ export type MessageType = {
   systemMessage: boolean;
 };
 
+export type ReactionMessage = {
+  id: string;
+  emoji: string;
+  createdAt: number;
+};
+
 export type Action<T = object> = {
   type: string;
   payload?: T;

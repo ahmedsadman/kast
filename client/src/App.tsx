@@ -10,6 +10,7 @@ import { socket, createEventHandlers } from './socket';
 import { pollUserDetails, getRoom, getRoomUsers } from './services';
 import { usePlayerDispatch } from './contexts/PlayerContext';
 import { useAppDispatch } from './contexts/AppContext';
+import { MessageType, User, ReactionMessage } from './types';
 import { steps } from './tour';
 
 import styles from './App.module.css';
@@ -105,6 +106,7 @@ function App() {
     socket.on('videoPlayed', onVideoPlayed);
     socket.on('videoPaused', onVideoPaused);
     socket.on('newMessage', onNewMessage);
+    socket.on('newReaction', onNewReaction);
     socket.on('roomUserJoin', onNewUserJoin);
     socket.on('roomUserLeave', onUserLeave);
 
@@ -117,6 +119,7 @@ function App() {
       socket.off('newMessage', onNewMessage);
       socket.off('roomUserJoin', onNewUserJoin);
       socket.off('roomUserLeave', onUserLeave);
+      socket.off('newReaction', onNewReaction);
     };
   }, [playerDispatch, appDispatch, Tour]);
 
