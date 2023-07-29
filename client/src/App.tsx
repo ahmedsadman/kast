@@ -8,7 +8,7 @@ import { socket } from './socket';
 import { pollUserDetails, getRoom, getRoomUsers } from './services';
 import { usePlayerDispatch } from './contexts/PlayerContext';
 import { useAppDispatch } from './contexts/AppContext';
-import { MessageType, User } from './types';
+import { MessageType, User, ReactionMessage } from './types';
 
 import styles from './App.module.css';
 
@@ -97,6 +97,10 @@ function App() {
       appDispatch?.({ type: 'new_message', payload: { message: data } });
     }
 
+    function onNewReaction(data: ReactionMessage) {
+      console.log('new reaction', data);
+    }
+
     function onNewUserJoin(user: User) {
       console.log('user join', user);
       appDispatch?.({ type: 'user_join', payload: { user } });
@@ -113,6 +117,7 @@ function App() {
     socket.on('videoPlayed', onVideoPlayed);
     socket.on('videoPaused', onVideoPaused);
     socket.on('newMessage', onNewMessage);
+    socket.on('newReaction', onNewReaction);
     socket.on('roomUserJoin', onNewUserJoin);
     socket.on('roomUserLeave', onUserLeave);
 
@@ -125,6 +130,7 @@ function App() {
       socket.off('newMessage', onNewMessage);
       socket.off('roomUserJoin', onNewUserJoin);
       socket.off('roomUserLeave', onUserLeave);
+      socket.off('newReaction', onNewReaction);
     };
   }, [playerDispatch, appDispatch]);
 
