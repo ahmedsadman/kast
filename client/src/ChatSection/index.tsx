@@ -3,6 +3,7 @@ import { Input, HStack, IconButton, Box, Flex } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
 import Message from './Message';
 import Participants from './Participants';
+import ReactionBar from './Reactions/ReactionsBar';
 import { useApp } from '../contexts/AppContext';
 
 import { socket } from '../socket';
@@ -45,7 +46,7 @@ function ChatSection() {
   return (
     <Flex direction="column" flex={1} justifyContent="space-between">
       <Participants />
-      <Box height={{ base: '84vh', xl: '84vh', '2xl': '88vh' }} overflow="auto" mt={5} pr={2}>
+      <Box height={{ base: '74vh', xl: '74vh', '2xl': '82vh' }} overflow="auto" mt={5} pr={2}>
         {messages.map((message) => (
           <Message
             key={message.id}
@@ -56,6 +57,7 @@ function ChatSection() {
         ))}
         <div ref={messageEnd} className="chatbox"></div>
       </Box>
+      <ReactionBar />
       <HStack flex={0} p={1}>
         <Input
           type="text"
