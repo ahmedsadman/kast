@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, useContext } from 'react';
-import { MessageType, User, Action, Dispatch } from '../types';
+import { MessageType, ReactionMessage, User, Action, Dispatch } from '../types';
 
 export const AppContext = createContext<AppState | undefined>(undefined);
 export const AppContextDispatch = createContext<Dispatch | undefined>(undefined);
@@ -90,6 +90,22 @@ function appReducer(state: AppState, action: ActionUnion): AppState {
       };
     }
 
+    case 'new_reaction': {
+      const reactions = [...state.reactions];
+      const incomingReaction = (action as NewReactionAction).payload?.reaction;
+
+      if (incomingReaction) {
+        reactions.push(incomingReaction);
+      }
+      console.log('getting reaction');
+      console.log('new reactions', reactions);
+
+      return {
+        ...state,
+        reactions,
+      };
+    }
+
     default:
       return state;
   }
@@ -100,12 +116,14 @@ const initialState: AppState = {
   roomId: undefined,
   userId: undefined,
   messages: [],
+  reactions: [],
   users: [],
 };
 
 type UpdateRoomIdAction = Action<{ roomId: string }>;
 type UpdateUserIdAction = Action<{ userId: string }>;
 type NewMessageAction = Action<{ message: MessageType }>;
+type NewReactionAction = Action<{ reaction: ReactionMessage }>;
 type UserStatusAction = Action<{ user: User }>;
 type UserListUpdateAction = Action<{ users: User[] }>;
 export type ActionUnion = Action | UpdateRoomIdAction | NewMessageAction;
@@ -115,5 +133,6 @@ type AppState = {
   roomId: string | undefined;
   userId: string | undefined;
   messages: MessageType[];
+  reactions: ReactionMessage[];
   users: User[];
 };

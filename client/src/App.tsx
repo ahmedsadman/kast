@@ -100,6 +100,9 @@ function App() {
       setSocketError('Could not reach server at the moment. It is possible that server is not live to minimize costs');
     }
 
+    function onNewReaction(reaction: ReactionMessage) {
+      appDispatch?.({ type: 'new_reaction', payload: { reaction } });
+    }
     socket.on('connect', onConnect);
     socket.on('connect_error', onConnectFailed);
     socket.on('disconnect', onDisconnect);
