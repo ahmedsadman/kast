@@ -19,6 +19,10 @@ function ChatSection() {
   }, [messages.length]);
 
   const handleMessageSend = useCallback(() => {
+    if (!messageText.trim()) {
+      return;
+    }
+
     socket.emit('newMessage', {
       content: messageText,
     });
@@ -41,7 +45,7 @@ function ChatSection() {
   return (
     <Flex direction="column" flex={1} justifyContent="space-between">
       <Participants />
-      <Box height={{ base: '84vh', xl: '84vh', '2xl': '88vh' }} overflow="auto" mt={5}>
+      <Box height={{ base: '84vh', xl: '84vh', '2xl': '88vh' }} overflow="auto" mt={5} pr={2}>
         {messages.map((message) => (
           <Message
             key={message.id}

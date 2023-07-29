@@ -51,6 +51,8 @@ function JoinModal({
                     placeholder="Display name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    // eslint-disable-next-line
+                    autoFocus
                   />
                 </InputGroup>
                 {joinError && <Text color="red">{joinError}</Text>}
