@@ -71,6 +71,7 @@ function Player({ src, borderColor }: PlayerProps) {
       onPlay={onPlay}
       onPause={onPause}
       controls
+      controlsList="nofullscreen"
     >
       <source src={src} />
       {playerState?.subtitleFile && <track label="English" kind="subtitles" src={playerState.subtitleFile} default />}
