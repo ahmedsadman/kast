@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { Input, HStack, IconButton, Box, Flex } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
 import Message from './Message';
+import Participants from './Participants';
 import { useApp } from '../contexts/AppContext';
 
 import { socket } from '../socket';
@@ -39,6 +40,7 @@ function ChatSection() {
 
   return (
     <Flex direction="column" flex={1} justifyContent="space-between">
+      <Participants />
       <Box height={{ base: '84vh', xl: '84vh', '2xl': '88vh' }} overflow="auto" mt={5}>
         {messages.map((message) => (
           <Message
