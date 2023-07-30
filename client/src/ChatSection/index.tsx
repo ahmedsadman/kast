@@ -4,6 +4,7 @@ import { CheckIcon } from '@chakra-ui/icons';
 import Message from './Message';
 import Participants from './Participants';
 import ReactionBar from './Reactions/ReactionsBar';
+import ReactionsOverlay from './Reactions/ReactionsOverlay';
 import { useApp } from '../contexts/AppContext';
 
 import { socket } from '../socket';
@@ -58,6 +59,7 @@ function ChatSection() {
         <div ref={messageEnd} className="chatbox"></div>
       </Box>
       <ReactionBar />
+      <ReactionsOverlay />
       <HStack flex={0} p={1}>
         <Input
           type="text"

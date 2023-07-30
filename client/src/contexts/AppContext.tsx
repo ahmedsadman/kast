@@ -97,12 +97,17 @@ function appReducer(state: AppState, action: ActionUnion): AppState {
       if (incomingReaction) {
         reactions.push(incomingReaction);
       }
-      console.log('getting reaction');
-      console.log('new reactions', reactions);
 
       return {
         ...state,
         reactions,
+      };
+    }
+
+    case 'remove_reaction': {
+      return {
+        ...state,
+        reactions: state.reactions.filter((reaction) => reaction.id !== (action as RemoveReactionAction).payload?.id),
       };
     }
 
@@ -124,6 +129,7 @@ type UpdateRoomIdAction = Action<{ roomId: string }>;
 type UpdateUserIdAction = Action<{ userId: string }>;
 type NewMessageAction = Action<{ message: MessageType }>;
 type NewReactionAction = Action<{ reaction: ReactionMessage }>;
+type RemoveReactionAction = Action<{ id: string }>;
 type UserStatusAction = Action<{ user: User }>;
 type UserListUpdateAction = Action<{ users: User[] }>;
 export type ActionUnion = Action | UpdateRoomIdAction | NewMessageAction;
