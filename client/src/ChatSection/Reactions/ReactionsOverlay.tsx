@@ -18,7 +18,7 @@ function ReactionsOverlay() {
 
   return (
     <HStack
-      maxWidth={500}
+      width={500}
       position="absolute"
       pointerEvents="none"
       overflow="hidden"
@@ -26,6 +26,8 @@ function ReactionsOverlay() {
       left="30%"
       fontSize="2.5em"
       opacity="0.9"
+      justifyContent="center"
+      alignItems="center"
     >
       {appState?.reactions.map((reaction) => (
         <Reaction key={reaction.id} reaction={reaction} onFinish={() => handleOnFinish(reaction.id)} />
