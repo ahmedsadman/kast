@@ -13,13 +13,13 @@ function ReactionBar() {
   };
 
   return (
-    <HStack justifyContent="space-around">
+    <HStack justifyContent="space-around" spacing={0}>
       {emojis.map((emoji) => (
         <Box
           className={styles.reactionEmoji}
           cursor="pointer"
           key={emoji}
-          fontSize={{ base: '1em', xl: '1.5em', '2xl': '1.5em' }}
+          fontSize={{ base: '1em', lg: '1.2em', '2xl': '1.5em' }}
           onClick={() => handleClick(emoji)}
         >
           {emoji}
