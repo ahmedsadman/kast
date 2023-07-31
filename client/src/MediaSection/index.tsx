@@ -18,6 +18,7 @@ function MediaSection({ openInviteModal, tourRef }: MediaSectionProps) {
   const videoInputRef = useRef<HTMLInputElement>(null);
   const subtitleInputRef = useRef<HTMLInputElement>(null);
   const [borderColor, setBorderColor] = useState('transparent');
+  const lastNotifyMessageId = useRef<string | null>(null);
 
   const toggleBorderEffect = useCallback(() => {
     setBorderColor((prevColor) => (prevColor === 'red' ? 'transparent' : 'red'));
@@ -36,8 +37,14 @@ function MediaSection({ openInviteModal, tourRef }: MediaSectionProps) {
     const { messages } = appState;
     const lastMessage = messages[messages.length - 1];
 
-    if (lastMessage?.user.id !== socket.id && !lastMessage?.systemMessage) {
+    if (
+      lastMessage?.id &&
+      lastMessage.id !== lastNotifyMessageId.current &&
+      lastMessage?.user.id !== socket.id &&
+      !lastMessage?.systemMessage
+    ) {
       notifyNewMessage();
+      lastNotifyMessageId.current = lastMessage.id;
     }
   }, [appState, notifyNewMessage]);
 
