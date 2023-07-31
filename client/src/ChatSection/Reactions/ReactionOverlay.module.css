@@ -1,0 +1,14 @@
+.reaction-enter-active {
+    font-size: 2.5em;
+    transition: font-size 300ms ease-out;
+}
+
+.reaction-enter-done {
+    font-size: 2.5em;
+    transition: font-size 300ms ease-out;
+}
+
+.reaction-exit-active {
+    font-size: 0;
+    transition: font-size 300ms ease-out;
+}

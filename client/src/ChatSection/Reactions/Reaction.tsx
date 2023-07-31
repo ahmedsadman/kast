@@ -2,14 +2,14 @@ import { useEffect } from 'react';
 
 import { ReactionMessage } from '../../types';
 
-function Reaction({ reaction, onFinish }: ReactionProps) {
+function Reaction({ reaction, onFinish, ...props }: ReactionProps) {
   useEffect(() => {
     setTimeout(() => {
       onFinish(reaction.id);
     }, 6000);
   });
 
-  return <div>{reaction.emoji}</div>;
+  return <div {...props}>{reaction.emoji}</div>;
 }
 
 type ReactionProps = {
