@@ -3,16 +3,12 @@ import { getNameInitials } from '../utils';
 
 function Message({ name, content, systemMessage }: AvatarProps) {
   return (
-    <HStack mb={4} pl="4%">
+    <HStack mb={4} pl="4%" fontSize={{ base: '0.9em', lg: '0.9em', '2xl': '1em' }} alignItems="center">
       <Tooltip label={name}>
-        <Avatar size="sm" name={name} mr={2} getInitials={getNameInitials} />
+        <Avatar size={{ base: 'xs', '2xl': 'sm' }} name={name} mr="1%" getInitials={getNameInitials} />
       </Tooltip>
 
-      <Text
-        as={systemMessage ? 'samp' : undefined}
-        color={systemMessage ? 'blue.300' : 'white'}
-        fontSize={systemMessage ? 'sm' : 'md'}
-      >
+      <Text as={systemMessage ? 'samp' : undefined} color={systemMessage ? 'blue.300' : 'white'}>
         {content}
       </Text>
     </HStack>
