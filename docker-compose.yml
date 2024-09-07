@@ -17,6 +17,8 @@ services:
     build:
       context: client
       dockerfile: Dockerfile.dev
+    environment:
+      - VITE_SERVER_BASE_URL=http://localhost:3005
     ports:
       - '5173:5173'
     volumes:
