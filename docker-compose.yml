@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: server
+      dockerfile: Dockerfile.dev
+    ports:
+      - '3005:3005'
+    volumes:
+      - /usr/app/node_modules
+      - ./server:/usr/app
+
+  client:
+    depends_on:
+      - server
+    build:
+      context: client
+      dockerfile: Dockerfile.dev
+    ports:
+      - '5173:5173'
+    volumes:
+      - /usr/app/node_modules
+      - ./client:/usr/app
