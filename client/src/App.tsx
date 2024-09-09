@@ -31,8 +31,9 @@ function App() {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [joinError, setJoinError] = useState<string | undefined>(undefined);
   const [socketError, setSocketError] = useState<string | undefined>(undefined);
-  const { Tour } = useShepherd();
+  const [tourComplete, setTourComplete] = useState(false);
   const tour = useRef<Tour | undefined>();
+  const { Tour } = useShepherd();
 
   const playerDispatch = usePlayerDispatch();
   const appDispatch = useAppDispatch();
@@ -84,6 +85,7 @@ function App() {
   useEffect(() => {
     tour.current = new Tour(tourOptions);
     tour.current.addSteps(steps);
+    tour.current.on('tourComplete', () => setTourComplete(true));
 
     function onConnectFailed() {
       setSocketError('Could not reach server at the moment. It is possible that server is not live to minimize costs');
@@ -159,7 +161,7 @@ function App() {
       <InviteModal
         isOpen={showInviteModal}
         onClose={() => {
-          if (!tour.current?.isActive()) {
+          if (!tour.current?.isActive() && !tourComplete) {
             tour.current?.start();
           }
 

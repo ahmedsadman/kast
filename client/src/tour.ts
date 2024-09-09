@@ -42,6 +42,7 @@ export const steps: StepOptions[] = [
         classes: 'shepherd-button-primary',
         text: 'Done',
         action: function () {
+          this.trigger('tourComplete');
           return this.next();
         },
       },
