@@ -3,7 +3,7 @@ import { StepOptions } from 'shepherd.js';
 export const steps: StepOptions[] = [
   {
     id: 'selectVideo',
-    text: 'Select a video file',
+    text: 'Select the video file. Every participant should load the exact same one from their system',
     attachTo: {
       element: '.selectVideo',
       on: 'bottom-end',
@@ -16,10 +16,19 @@ export const steps: StepOptions[] = [
       element: '.copyLink',
       on: 'bottom-end',
     },
+    buttons: [
+      {
+        classes: 'shepherd-button-primary',
+        text: 'Next',
+        action: function () {
+          return this.next();
+        },
+      },
+    ],
   },
   {
     id: 'chatbox',
-    text: 'Your friends joining will be shown here. Ask them to load the same file',
+    text: "Your friends' joining will be shown here. Ask them to load the same video file",
     attachTo: {
       element: '.chatbox',
       on: 'left-start',
@@ -36,7 +45,7 @@ export const steps: StepOptions[] = [
   },
   {
     id: 'final',
-    text: 'Start playing when everyone is ready',
+    text: 'Once ready, anyone can start playing and it would sync across all participants',
     buttons: [
       {
         classes: 'shepherd-button-primary',

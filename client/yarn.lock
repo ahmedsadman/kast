@@ -3407,7 +3407,7 @@ shebang-regex@^3.0.0:
   resolved "https://registry.yarnpkg.com/shebang-regex/-/shebang-regex-3.0.0.tgz#ae16f1644d873ecad843b0307b143362d4c42172"
   integrity sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
 
-shepherd.js@13.0.3:
+shepherd.js@13.0.3, shepherd.js@^13.0.3:
   version "13.0.3"
   resolved "https://registry.yarnpkg.com/shepherd.js/-/shepherd.js-13.0.3.tgz#78fc4b7a8c9df5a03b83c7893967c92b39396553"
   integrity sha512-1lQtQUNQYi+8k9BAmbUZh7D2QxFfkxiWKU0XFTbzYaIrCkB4nR0DLQuarH5G7Ym6L8wfbadxP3hJhZ2HzVktaA==
