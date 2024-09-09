@@ -9,4 +9,9 @@ export default defineConfig(async () => ({
       localsConvention: 'camelCase',
     },
   },
+  server: {
+    watch: {
+      usePolling: true,
+    },
+  },
 }));
