@@ -15,6 +15,7 @@ function TopBar({ menuItems, fileName, openInviteModal }: TopBarProps) {
             icon={<LinkIcon />}
             _hover={{ color: 'black', bg: 'white' }}
             onClick={openInviteModal}
+            className="copyLink"
           />
         </Tooltip>
 

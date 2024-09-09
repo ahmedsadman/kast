@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Grid, GridItem, Flex } from '@chakra-ui/react';
+import { useShepherd } from 'react-shepherd';
+import { Tour } from 'shepherd.js';
 import MediaSection from './MediaSection';
 import ChatSection from './ChatSection';
 import JoinModal from './JoinModal';
@@ -9,8 +11,19 @@ import { pollUserDetails, getRoom, getRoomUsers } from './services';
 import { usePlayerDispatch } from './contexts/PlayerContext';
 import { useAppDispatch } from './contexts/AppContext';
 import { MessageType, User } from './types';
+import { steps } from './tour';
 
 import styles from './App.module.css';
+import 'shepherd.js/dist/css/shepherd.css';
+
+const tourOptions = {
+  defaultStepOptions: {
+    cancelIcon: {
+      enabled: true,
+    },
+  },
+  useModalOverlay: false,
+};
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +31,8 @@ function App() {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [joinError, setJoinError] = useState<string | undefined>(undefined);
   const [socketError, setSocketError] = useState<string | undefined>(undefined);
+  const { Tour } = useShepherd();
+  const tour = useRef<Tour | undefined>();
 
   const playerDispatch = usePlayerDispatch();
   const appDispatch = useAppDispatch();
@@ -67,6 +82,9 @@ function App() {
   };
 
   useEffect(() => {
+    tour.current = new Tour(tourOptions);
+    tour.current.addSteps(steps);
+
     function onConnectFailed() {
       setSocketError('Could not reach server at the moment. It is possible that server is not live to minimize costs');
     }
@@ -126,7 +144,7 @@ function App() {
       socket.off('roomUserJoin', onNewUserJoin);
       socket.off('roomUserLeave', onUserLeave);
     };
-  }, [playerDispatch, appDispatch]);
+  }, [playerDispatch, appDispatch, Tour]);
 
   return (
     <div className={styles.mainContainer}>
@@ -138,10 +156,23 @@ function App() {
         joinError={joinError}
         socketError={socketError}
       />
-      <InviteModal isOpen={showInviteModal} onClose={() => setShowInviteModal(false)} />
+      <InviteModal
+        isOpen={showInviteModal}
+        onClose={() => {
+          if (!tour.current?.isActive()) {
+            tour.current?.start();
+          }
+
+          if (tour.current?.currentStep?.id === 'copyLink') {
+            tour.current?.next();
+          }
+
+          setShowInviteModal(false);
+        }}
+      />
       <Grid flex={1} minHeight="100vh" templateColumns="repeat(12, 2fr)" gap={0}>
         <GridItem display="flex" colSpan={10} bg="#2C3333">
-          <MediaSection openInviteModal={() => setShowInviteModal(true)} />
+          <MediaSection openInviteModal={() => setShowInviteModal(true)} tourRef={tour} />
         </GridItem>
         <GridItem display="flex" colSpan={2} bg="black">
           <Flex direction="column" flex={1}>

@@ -54,7 +54,7 @@ function ChatSection() {
             systemMessage={message.systemMessage}
           />
         ))}
-        <div ref={messageEnd}></div>
+        <div ref={messageEnd} className="chatbox"></div>
       </Box>
       <HStack flex={0} p={1}>
         <Input

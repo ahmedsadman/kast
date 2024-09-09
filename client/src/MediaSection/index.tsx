@@ -6,10 +6,11 @@ import Player from './Player';
 import TopBar from './TopBar';
 import { useApp } from '../contexts/AppContext';
 import { socket } from '../socket';
+import { Tour } from 'shepherd.js';
 
 import styles from './MediaSection.module.css';
 
-function MediaSection({ openInviteModal }: MediaSectionProps) {
+function MediaSection({ openInviteModal, tourRef }: MediaSectionProps) {
   const playerState = usePlayer();
   const appState = useApp();
   const playerDispatch = usePlayerDispatch();
@@ -59,8 +60,9 @@ function MediaSection({ openInviteModal }: MediaSectionProps) {
       const file = event.target.files?.[0];
       const fileUrl = file ? URL.createObjectURL(file) : undefined;
       playerDispatch?.({ type: 'update_video_file', payload: { file: fileUrl, fileName: file?.name } });
+      tourRef?.current?.next();
     },
-    [playerDispatch],
+    [playerDispatch, tourRef],
   );
 
   const menuItems = useMemo(
@@ -79,7 +81,7 @@ function MediaSection({ openInviteModal }: MediaSectionProps) {
       <TopBar openInviteModal={openInviteModal} fileName={playerState?.videoFileName} menuItems={menuItems} />
       {!playerState?.videoFileUrl ? (
         <div className={styles.selectionPhContainer}>
-          <Button colorScheme="blue" onClick={() => videoInputRef.current?.click()}>
+          <Button colorScheme="blue" className="selectVideo" onClick={() => videoInputRef.current?.click()}>
             Select Video
           </Button>
         </div>
@@ -100,6 +102,7 @@ function MediaSection({ openInviteModal }: MediaSectionProps) {
 
 type MediaSectionProps = {
   openInviteModal: () => void;
+  tourRef: React.MutableRefObject<Tour | undefined>;
 };
 
 export default MediaSection;
