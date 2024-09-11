@@ -6,7 +6,7 @@ dev_start() {
 }
 
 dev_stop() {
-    docker compose -p kast-dev down
+    docker compose -p kast-dev stop
 }
 
 dev_restart() {
