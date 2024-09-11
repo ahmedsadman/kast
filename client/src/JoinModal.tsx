@@ -16,21 +16,13 @@ import {
 import { AtSignIcon } from '@chakra-ui/icons';
 import { useApp } from './contexts/AppContext';
 
-function JoinModal({
-  isOpen,
-  loading,
-  onClose,
-  closeOnOverlayClick = false,
-  onSubmit,
-  joinError,
-  socketError,
-}: ModalProps) {
+function JoinModal({ isOpen, loading, closeOnOverlayClick = false, onSubmit, joinError, socketError }: ModalProps) {
   const [name, setName] = useState('');
   const appState = useApp();
   const isConnected = appState?.isConnected;
 
   return (
-    <Modal isOpen={isOpen} isCentered size="lg" onClose={onClose} closeOnOverlayClick={closeOnOverlayClick}>
+    <Modal isOpen={isOpen} isCentered size="lg" onClose={() => null} closeOnOverlayClick={closeOnOverlayClick}>
       <ModalOverlay />
       <ModalContent
         minHeight="80px"
@@ -82,7 +74,6 @@ function JoinModal({
 type ModalProps = {
   isOpen: boolean;
   loading: boolean;
-  onClose: () => void;
   onSubmit: (_name: string) => void;
   closeOnOverlayClick?: boolean;
   joinError: string | undefined;

@@ -37,13 +37,12 @@ function App() {
 
   const playerDispatch = usePlayerDispatch();
   const appDispatch = useAppDispatch();
+  const roomId = window.location?.pathname?.split('/')?.[1];
 
   // TODO: Refactor
   const handleJoinModalSubmit = async (name: string) => {
     setIsLoading(true);
     setJoinError(undefined);
-
-    const roomId = window.location?.pathname?.split('/')?.[1];
 
     if (roomId) {
       const roomDetails = await getRoom(roomId);
@@ -79,6 +78,14 @@ function App() {
 
     if (!roomId) {
       setShowInviteModal(true);
+    } else {
+      startTour(tour.current);
+    }
+  };
+
+  const startTour = (tour: Tour | undefined) => {
+    if (!tour?.isActive() && !tourComplete) {
+      tour?.start();
     }
   };
 
@@ -153,7 +160,6 @@ function App() {
       <JoinModal
         loading={isLoading}
         isOpen={showJoinModal}
-        onClose={() => setShowJoinModal(false)}
         onSubmit={handleJoinModalSubmit}
         joinError={joinError}
         socketError={socketError}
@@ -161,14 +167,10 @@ function App() {
       <InviteModal
         isOpen={showInviteModal}
         onClose={() => {
-          if (!tour.current?.isActive() && !tourComplete) {
-            tour.current?.start();
-          }
-
+          startTour(tour.current);
           if (tour.current?.currentStep?.id === 'copyLink') {
             tour.current?.next();
           }
-
           setShowInviteModal(false);
         }}
       />
