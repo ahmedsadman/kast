@@ -13,4 +13,4 @@ EXPOSE 3005
 
 RUN chmod +x run-server.sh
 
-ENTRYPOINT [ "./run-server.sh" ]
+ENTRYPOINT ["./run-server.sh"]
