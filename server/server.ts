@@ -23,8 +23,8 @@ const io = new Server(server, {
   },
 });
 
-app.get('/status', (_req, res) => {
-  res.send({ status: 'OK' });
+app.get('/ping', (_req, res) => {
+  res.send('pong');
 });
 
 app.get('/user/:userId', async (req, res) => {
