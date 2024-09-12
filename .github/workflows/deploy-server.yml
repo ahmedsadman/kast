@@ -33,4 +33,16 @@ jobs:
           context: server
           tags: ahmedsadman/kast-server:latest
   
-  # add deploy step
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: docker
+
+    steps:
+      - name: Execute remote ssh commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: ./kast_scripts.sh deploy_server
