@@ -6,11 +6,10 @@ import MediaSection from './MediaSection';
 import ChatSection from './ChatSection';
 import JoinModal from './JoinModal';
 import InviteModal from './InviteModal';
-import { socket } from './socket';
+import { socket, createEventHandlers } from './socket';
 import { pollUserDetails, getRoom, getRoomUsers } from './services';
 import { usePlayerDispatch } from './contexts/PlayerContext';
 import { useAppDispatch } from './contexts/AppContext';
-import { MessageType, User } from './types';
 import { steps } from './tour';
 
 import styles from './App.module.css';
@@ -93,45 +92,11 @@ function App() {
     tour.current = new Tour(tourOptions);
     tour.current.addSteps(steps);
     tour.current.on('tourComplete', () => setTourComplete(true));
+    const { onConnect, onDisconnect, onVideoPaused, onVideoPlayed, onNewMessage, onNewUserJoin, onUserLeave } =
+      createEventHandlers(appDispatch, playerDispatch);
 
     function onConnectFailed() {
       setSocketError('Could not reach server at the moment. It is possible that server is not live to minimize costs');
-    }
-
-    function onConnect() {
-      if (socket.recovered) {
-        console.log('connection recovered');
-      }
-      appDispatch?.({ type: 'connected' });
-    }
-
-    function onDisconnect() {
-      appDispatch?.({ type: 'disconnected' });
-    }
-
-    function onVideoPlayed(data: { id: string; time: number }) {
-      console.log('onVideoPlayed');
-      playerDispatch?.({ type: 'played' });
-      playerDispatch?.({ type: 'update_time', payload: { time: data.time } });
-    }
-
-    function onVideoPaused() {
-      console.log('onVideoPaused');
-      playerDispatch?.({ type: 'paused' });
-    }
-
-    function onNewMessage(data: MessageType) {
-      appDispatch?.({ type: 'new_message', payload: { message: data } });
-    }
-
-    function onNewUserJoin(user: User) {
-      console.log('user join', user);
-      appDispatch?.({ type: 'user_join', payload: { user } });
-    }
-
-    function onUserLeave(user: User) {
-      console.log('user leave', user);
-      appDispatch?.({ type: 'user_leave', payload: { user } });
     }
 
     socket.on('connect', onConnect);

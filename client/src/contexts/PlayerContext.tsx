@@ -1,8 +1,8 @@
 import React, { createContext, useReducer, useContext } from 'react';
 import { Action, Dispatch } from '../types';
 
-export const PlayerContext = createContext<PlayerState | null>(null);
-export const PlayerContextDispatch = createContext<Dispatch | null>(null);
+export const PlayerContext = createContext<PlayerState | undefined>(undefined);
+export const PlayerContextDispatch = createContext<Dispatch | undefined>(undefined);
 
 export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [player, dispatch] = useReducer(playerReducer, initialState);

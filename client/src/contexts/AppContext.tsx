@@ -1,8 +1,8 @@
 import React, { createContext, useReducer, useContext } from 'react';
 import { MessageType, User, Action, Dispatch } from '../types';
 
-export const AppContext = createContext<AppState | null>(null);
-export const AppContextDispatch = createContext<Dispatch | null>(null);
+export const AppContext = createContext<AppState | undefined>(undefined);
+export const AppContextDispatch = createContext<Dispatch | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [app, dispatch] = useReducer(appReducer, initialState);
@@ -108,7 +108,7 @@ type UpdateUserIdAction = Action<{ userId: string }>;
 type NewMessageAction = Action<{ message: MessageType }>;
 type UserStatusAction = Action<{ user: User }>;
 type UserListUpdateAction = Action<{ users: User[] }>;
-type ActionUnion = Action | UpdateRoomIdAction | NewMessageAction;
+export type ActionUnion = Action | UpdateRoomIdAction | NewMessageAction;
 
 type AppState = {
   isConnected: boolean;
