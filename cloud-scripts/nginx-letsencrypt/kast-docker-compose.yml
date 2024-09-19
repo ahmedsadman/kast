@@ -1,0 +1,17 @@
+services:
+  kast_server:
+    image: ahmedsadman/kast-server:latest
+    restart: unless-stopped
+    networks:
+      - kast_network
+  nginx:
+    depends_on:
+      - kast_server
+    networks:
+      - kast_network
+  certbot:
+    networks:
+      - kast_network
+
+networks:
+  kast_network:
