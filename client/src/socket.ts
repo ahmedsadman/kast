@@ -1,6 +1,6 @@
 import { Dispatch } from 'react';
 import { io } from 'socket.io-client';
-import { MessageType, User } from './types';
+import { MessageType, ReactionMessage, User } from './types';
 import { ActionUnion } from './contexts/AppContext';
 
 export const socket = io(import.meta.env.VITE_SERVER_BASE_URL, { path: '/socket' });
@@ -37,6 +37,10 @@ export const createEventHandlers = (
     onNewUserJoin: function (user: User) {
       console.log('user join', user);
       appDispatch?.({ type: 'user_join', payload: { user } });
+    },
+
+    onNewReaction: function (reaction: ReactionMessage) {
+      appDispatch?.({ type: 'new_reaction', payload: { reaction } });
     },
 
     onUserLeave: function (user: User) {
