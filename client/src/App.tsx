@@ -10,7 +10,6 @@ import { socket, createEventHandlers } from './socket';
 import { pollUserDetails, getRoom, getRoomUsers } from './services';
 import { usePlayerDispatch } from './contexts/PlayerContext';
 import { useAppDispatch } from './contexts/AppContext';
-import { MessageType, User, ReactionMessage } from './types';
 import { steps } from './tour';
 
 import styles from './App.module.css';
@@ -93,16 +92,13 @@ function App() {
     tour.current = new Tour(tourOptions);
     tour.current.addSteps(steps);
     tour.current.on('tourComplete', () => setTourComplete(true));
-    const { onConnect, onDisconnect, onVideoPaused, onVideoPlayed, onNewMessage, onNewUserJoin, onUserLeave } =
+    const { onConnect, onDisconnect, onVideoPaused, onVideoPlayed, onNewMessage, onNewReaction, onNewUserJoin, onUserLeave } =
       createEventHandlers(appDispatch, playerDispatch);
 
     function onConnectFailed() {
       setSocketError('Could not reach server at the moment. It is possible that server is not live to minimize costs');
     }
 
-    function onNewReaction(reaction: ReactionMessage) {
-      appDispatch?.({ type: 'new_reaction', payload: { reaction } });
-    }
     socket.on('connect', onConnect);
     socket.on('connect_error', onConnectFailed);
     socket.on('disconnect', onDisconnect);
